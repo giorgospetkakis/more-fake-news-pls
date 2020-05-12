@@ -1,0 +1,54 @@
+================================= Meeting Notes =======================================
+
+12 May 2020 ---------------------------------------------------------------------------
+
+FLORA:
+
+Sentiment analysis: Can't find any pre-trained models. Our data isn't already annotated for it. But we can continue to look into it.
+
+Named Entity Recognition : spaCy -- best option
+-- have different models trained on different corpora.
+-- have it trained on different data and relevant to politics.
+
+TO READ: Combine Sentiment analysis and NER article. (Flora will find link and send it to us)
+
+GIORGOS:
+
+Author Profiling: Doesn't seem like something we'd want to use / have the capabilities for. We don't have the data for it. It would be circuitous (so we'd need to separately train a model to infer about our data through the text). It depends on how well we train our OTHER models. So we'd be polluting our existing data with new data we're not 100% sure about.
+-- Generally use RNN or CNN to determine author profiling. But no algorithms. Just models.
+-- But we can look through papers if we want to implement it.
+
+Clustering: Can use k-means? Could be sufficient. But other options that we can use depending on what kind of data we end up with. Can use it as a data exploration step after a PCA? Maybe we can cluster after the different features we have? Not necessarily for classification.
+-- If we do sentiment analysis for each tweet, we can cluster a user's tweets based on sentiment analyses results.
+-- Useful for data exploration so we know what the data looks like. We can then make more nuanced decisions based on that.
+
+Maybe start on low-hanging fruit (eg. SPaCY) before we start on higher level things (such as NNs).
+
+When we start. We might want to add more features/dimensions so when we write code don't hard-code dimensions.
+
+SARA:
+
+Word-Embedding Vectors: GLoVE has pre-trained WEVs on Twitter data. v popular ( can download: https://nlp.stanford.edu/projects/glove/ ). We can also train our own. One issue is they aren't contextualized --> ELmo and BErT (http://jalammar.github.io/illustrated-bert/ ; https://arxiv.org/abs/1802.05365 ; https://colab.research.google.com/github/tensorflow/tpu/blob/master/tools/colab/bert_finetuning_with_cloud_tpus.ipynb#scrollTo=wHQH4OCHZ9bq )
+Pre-trained models: (https://github.com/google-research/bert#pre-trained-models ; https://towardsdatascience.com/russian-troll-tweets-classification-using-bert-abec09e43558 ; AllenNLP )
+
+Topic Classification: Some issues. I'm not sure how easy it is. Combined often with Sentiment Analysis ( https://github.com/mtala3t/Identify-the-Sentiments-AV-NLP-Contest ). Lots of diff techniques available here ( https://github.com/abhishek9sharma/TwitterAnalysis  )
+-- Theres a difference between saying a topic is related to fake news. Or saying the relationships between these topics suggest fake news.
+-- How can we do it unsupervised? We don't have a pre-defined list of topics. NER to determine topics? Or used TF-IDF and k-means to do unsupervised clustering (maybe then use rudimentary sentiment analysis on it) 
+
+OTHER NOTES:
+
+Giorgos has pushed some code onto git repo. Filename is author ID. Stores as a value the author object (which has same key as a value) and tweets as a list of strings. And the truth value is saved as an int. Can then import that entire modules for feature extractions.
+
+Beautifulsoup is an xml parser. Made a utils.py file that includes a single function to take to root directory of the projects. Giorgos is doing things to make code cool for now.
+
+We should probably take apart a validation data set? Need to split after feature extraction? Do we? In the wild, the input will still be a text string we need to put into features. But need to keep in mind we will need to remove validation datasets.
+TO DO: Read into Conditional Random Fields (& cross-validation)
+
+TO DO BY NEXT MEETING 
+Flora --> low-level feautres to extract: # of urls, # of hashtags, # of users spoken to , capitalization, punctuation use (freq? longest sequence?) (Max number in one tweet. and the mean for each feature), freq of RTs (--> Decision trees and use permutation test?) --> Floras sentiment analysis aritcles
+
+Sara --> then use SPaCY to do NER --> (encode in one-hot encoding?) + GLoVe WEVs? & [POS Tagger in SPaCY --> count # of adjectives, # of nouns, # verbs] --> SpaCy documentation
+
+Giorgos --> Topic classification using TF-IDF and Clustering ( https://towardsdatascience.com/applying-machine-learning-to-classify-an-unsupervised-text-document-e7bb6265f52 ) --> personality determination via non-language features articles.
+
+Next Meeting: 17 May at around kl. 17?
