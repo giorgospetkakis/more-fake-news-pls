@@ -1,0 +1,24 @@
+WORD EMBEDDING VECTORS:
+- GLoVe pretrained word embedding vectors
+https://nlp.stanford.edu/projects/glove/
+Can download them.
+--> can also train our own word embeddings?
+
+^ Those aren't contextualised ( http://jalammar.github.io/illustrated-bert/ )
+---> Elmo or Bert?
+Read more:
+https://arxiv.org/abs/1802.05365
+**can play with it here: https://colab.research.google.com/github/tensorflow/tpu/blob/master/tools/colab/bert_finetuning_with_cloud_tpus.ipynb#scrollTo=wHQH4OCHZ9bq
+
+lots of pretrained models: https://github.com/google-research/bert#pre-trained-models
+(used to identify troll tweets: https://towardsdatascience.com/russian-troll-tweets-classification-using-bert-abec09e43558 )
+
+> used for sentiment analysis too! https://github.com/XiaoQQin/BERT-fine-tuning-for-twitter-sentiment-analysis
+
+SPaCeY best option for NER
+
+TOPIC CLASSIFICATION?
+-- seems like we'd need to know topics (maybe clustering would be better for this?). Lots of sentiment analysis involves topic classification so maybe flora found something better.
+( https://github.com/mtala3t/Identify-the-Sentiments-AV-NLP-Contest )
+
+https://github.com/abhishek9sharma/TwitterAnalysis -- ltos of different techniques
