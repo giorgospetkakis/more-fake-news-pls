@@ -52,22 +52,21 @@ for r in range(10):
 
             res = [(pred[np.where(pred[:, 1]==k)])[:,0] for k in range(2)]
 
-            average_purity = 0
+            cum_purity = 0
+            classes_predicted = true_k
             for c in range(true_k):
                 class_a = len(np.where(res[0]==c)[0])
                 class_b = len(np.where(res[1]==c)[0])
 
                 class_sum = class_a + class_b
                 if class_sum != 0:
-                    purity = abs(0.5 - class_a / class_sum) * 2
+                    purity = abs(0.5 - class_a / class_sum) * (class_sum/len(tweetsTest))
                 else:
                     purity = 0
+                cum_purity += purity
 
-                average_purity += purity
-            average_purity /= true_k
-
-            print(f"Average Purity: {average_purity}")
-            total_average_purity += average_purity
+            print(f"Cumulative Purity: {cum_purity}")
+            total_average_purity += cum_purity
         total_average_purity /= iters
         purities += [total_average_purity]
 
