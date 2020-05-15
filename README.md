@@ -4,7 +4,7 @@ This is our repository for the NLP2 project.
 
 ## Framework
 
-- *data*
+- __data__
 	- *external*
 		- Keep data from external data sources here
 	- *interim*
@@ -14,32 +14,32 @@ This is our repository for the NLP2 project.
 	- *raw*
 		- Keep raw project data here
 
-- *docs*
+- __docs__
 	- Keep text related to the project here (for example: notes, assignment description, etc.)
 
-- *models*
-	- Keep saved model features and objects for reuse here.
+- __models__
+    - Keep saved model features and objects for reuse here.
 
-- *notebooks*
+- __notebooks__
 	- Keep jupyter notebook files here
 	- Follow naming convention of date-initials-description.pynb, (e.g. 08052020-svm-datacleaning.pynb)
 
-- *reports*
-	- *figures*
+- __reports__
+	- __figures__
 		- Keep figures related to the project report submission here.
 	- Keep LaTeX files and other report related files here.
 
-- *references*
+- __references__
 	- Save articles and other references here for easy access in the future.
 
-- *src*
-	- *data.py*
+- __src__
+	- __data.py__
 		- Collect data
-	- *preprocessing.py*
+	- __preprocessing.py__
 		- Clean the data
-	- *features.py*
+	- __features.py__
 		- Extract the relevant features
-	- *models.py*
+	- __models.py__
 		- Create, train and run the models
-	- *visualization.py*
+	- __visualization.py__
 		- Create visualisations for the report
