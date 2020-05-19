@@ -1,6 +1,6 @@
 import data
 import spacy
-import json
+import jsonpickle
 from utils import go_to_project_root
 
 def process_tweets():
@@ -42,13 +42,16 @@ def process_tweets():
 			lemmas.append([token.lemma_.lower() for token in tweet if (token.is_alpha and (token.text not in ignore))])
 			authors[author].clean.append(" ".join(lemmas[0]))
 
-			# Now save into the JSON file. This doesn't work right now. Will work on it.
-			# with open("data/processed/{authors[author].author_id}.json", "w") as file:
-			# 	json.dump(authors[author].__dict___, file)
+		# Now save into the JSON file. This doesn't work right now. Will work on it.
+		with open(f"data/processed/{authors[author].author_id}.json", "w") as file:
+			file.writelines(jsonpickle.encode(authors[author], unpicklable=False))
+			file.close()
 
 	print('Data processed and saved')
 	return(authors)
 
+if __name__ == '__main__':
+    process_tweets()
 
 # # To compare noun chunking vs named entity recognition.
 # print([chunk.text for chunk in nlp(authors['06ct0t68y1acizh9eow3g5rhancrppr8'].tweets[9]).noun_chunks])

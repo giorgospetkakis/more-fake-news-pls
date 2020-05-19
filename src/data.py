@@ -70,7 +70,7 @@ def __parse_tweets__(filepath):
     tweets = soup.find_all('document')
     return [t.get_text() for t in tweets]
 
-def get_raw_data(lang):
+def get_raw_data(lang='en'):
     '''
     Returns the raw data in the selected language.
 
