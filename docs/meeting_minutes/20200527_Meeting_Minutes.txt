@@ -1,0 +1,52 @@
+=========================17-05-2020 Meeting Minutes====================================
+
+GIORGOS----------------------------------------------------------------------------
+Giorgos's work on TF-IDF and cluster ok but doesn't really separate the two classes that well. Has written about it on the FB groupchat. Maybe will try with other things such as lemmas or named entities.
+-- Tommorrow or day after can continue with a few more tests (after looking at Sara's code)
+-- Thursday, he submits paper for Playable Media so he can focus more on this projects.
+
+FLORA------------------------------------------------------------------------------
+- Wokring on basic function to get diff counts and averages of.. URLS, hashtags, number of users replied to, and number of them that are retweets.
+- Will get the features for each of the features. Send screenshot of code.
+- Looking into counting emojis for accoutns (see if can get separate counts of the emojis)
+- Working on a separate function for capitalization --> see how many substrings are all caps (like sequence of all caps).
+---> some accounts. one is fake news. The other just posts to news articles. There is a noticeable difference between the two.
+---> She divides by 100 in her code because there are 100 tweets in each authors dataset.
+------- Giorgos finds an inefficiency in code. But it still gets the right thing in the end. But we can change it.
+Currently working on capitalization. Then will look at emojis. Then will look at punctuations. Can send her ideas with how we should deal with emojis.
+- Will give update in the future.
+
+Giorgos suggests we can do a basic classification of emojis. Like which ones? Not just a count, but the types? --> Can try to cluster. That may be unreliable though. Can see what emojis are used together. Seems interesting.
+
+She hasn't quite found an example of emojis though. --> Visual studio code should be able to show emojis. So maybe use that.
+
+Currently written as a function which takes an author key as a parameter and then prints the extracted features. We would prefer if it is all saved to the author objects (as was written in Giorgos' code on data.py). Sara recommended she look at her updates to Giorgos' object on data.py and her code on preprocessing.py to figure out how to do that. If she can't figure it out, contact Sara & Sara will show her over livecode or something!
+
+SARA -----------------------------------------------------------------------------------
+
+Used spacy to extract named entities, POS sequence (coarse grain) and a "clean" version of tweets (all in lowercase & lemma forms, URLs, emojis, hashtags removed. Only fully alpha-character words saved). These are saved into the author classes. Documentation on how to access the data should be on the Author class object. Hopefully, it's clear, but otherwise, please ask her.
+
+Wanted to save these updated objects to a JSON file but getting some weird bug (spacy objects can't be converted to JSON. ents variable of the Author object is still a spacy object. Tried to zip the relevant information (text and label) but that's saved as a zip object. Find another way to quickly extract those two pieces of infromation? 
+--- Giorgos : will look into how Sara can save into JSON files (Has lots of experience w JSON). Will look into it on Monday, May 18th:
+
+A little concerned with how the Named Entity recognition is working. Seems a little weird to me (especially on some Twitter accounts if they have weird capitalization). Saves more than just persons and so on (also saves amounts and times and so on). --> Maybe we should try noun-chunking instead to only get noun chunks (e.g. "a red car")
+--- Giorgos: Ultimately named entities will be used for clustering. Will test it out on that. If it's unfruitful, maybe we can then try noun-chunking (an example of noun-chunking is commented out in the preprocessing.py src file)
+--- Perhaps we can somehow use Flora's extracted features to edit weights (i.e. if they have a weird capitalizations, trust the named entity clustering a bit less)? --> maybe better if we were doing a NN.
+
+Found that spacy also has something that looks at the semantic similarity of documents. Returns the average cosine similarity of the word vectors. Interested in perhaps getting the average semantic similarity of an authors tweets? Can look into that.
+
+Now that POS info is extract, we can look into counting the # of POS tags per tweet. However, it may be based on Flora's code, so should wait until Flora pushes her half of the code to the repo.
+
+OTHER ----------------------------------------------------------------------------------
+
+- Decided to not do Spanish stuff. Can test it on the spanish data later. But first work on it from POV that we are just focusing on English. Some non-linguistic features will carry over (like what Flora is doing). But we don't want to spend time working on minutia we don't care about (which we probably don't have the time for).
+
+- Will focus on feature extraction only for now. Still work to do on that before building model.
+
+TO DO:
+- Flora will continue working on non-linguistic feature extraction. Currently working on capitalization feature extract. Will read into emoji extraction & then punctuation stuff. Message her if you have ideas, or she will have a brain storming seession later. Will look into how to save her results to the author objects.
+- Giorgos will try TF-IDF & clustering on named entities. Will see if he can figure out my JSON file. And try TF-IDF & clustering on noun-chunking if ents don't work?
+- Sara will look into semantic similarity measurements via spacy. Once Flora's done some stuff with feature extraction & pushed it, can look into counting POS tags. If needed, can extract noun-chunks for Giorgos.
+
+Finish feature extraction by next week. Then work on building the model next week.
+Meet on Wednesday evening (20 May, 18pm) to discuss emoji extraction? 
