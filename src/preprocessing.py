@@ -30,7 +30,7 @@ def process_tweets():
 		for tweet in nlp.pipe(authors[author].tweets, disable=['parser']):
 
 			#Named entity recognition
-			authors[author].ents.append(list(tweet.ents))
+			authors[author].ents.append([(str(ent.text), int(ent.label)) for ent in list(tweet.ents)])
 
 			#Collect and save tags
 			tags = []
@@ -42,13 +42,25 @@ def process_tweets():
 			lemmas.append([token.lemma_.lower() for token in tweet if (token.is_alpha and (token.text not in ignore))])
 			authors[author].clean.append(" ".join(lemmas[0]))
 
-		# Now save into the JSON file. This doesn't work right now. Will work on it.
-		with open(f"data/processed/{authors[author].author_id}.json", "w") as file:
-			file.writelines(jsonpickle.encode(authors[author], unpicklable=False))
-			file.close()
-
+		__exportJSON__(authors[author])
 	print('Data processed and saved')
 	return(authors)
+
+def __exportJSON__(author, path='data/processed/'):
+	'''
+	Exports an author object to a JSON file
+	Parameters: 
+		author (Author):
+			The author to be serialized
+	Export: None
+	'''
+	with open(f"{path}{author.author_id}.json", "w") as file:
+		file.writelines(__convert_to_JSON__(author))
+		file.close()
+	return
+
+def __convert_to_JSON__(author):
+	return jsonpickle.encode(author, unpicklable=False)
 
 if __name__ == '__main__':
     process_tweets()
