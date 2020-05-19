@@ -99,3 +99,20 @@ def get_processed_data(lang='en'):
         authors[file.split(".")[0]] = jsonpickle.decode(lines, classes=Author)
 
     return authors
+
+def exportJSON(author):
+    '''
+    Exports an author object to a JSON file
+    Parameters: 
+        author (Author):
+            The author to be serialized
+    Export: None
+    '''
+    path = PREPROCESSED_DATA_PATH
+    with open(f"{path}{author.author_id}.json", "w") as file:
+        file.writelines(__convert_to_JSON__(author))
+        file.close()
+    return
+
+def __convert_to_JSON__(author):
+    return jsonpickle.encode(author)

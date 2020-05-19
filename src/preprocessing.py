@@ -42,25 +42,9 @@ def process_tweets():
 			lemmas.append([token.lemma_.lower() for token in tweet if (token.is_alpha and token.text not in ignore)])
 			authors[author].clean.append(" ".join(lemmas[0]))
 
-		__exportJSON__(authors[author])
+		data.exportJSON(authors[author])
 	print('Data processed and saved')
 	return(authors)
-
-def __exportJSON__(author, path='data/processed/'):
-	'''
-	Exports an author object to a JSON file
-	Parameters: 
-		author (Author):
-			The author to be serialized
-	Export: None
-	'''
-	with open(f"{path}{author.author_id}.json", "w") as file:
-		file.writelines(__convert_to_JSON__(author))
-		file.close()
-	return
-
-def __convert_to_JSON__(author):
-	return jsonpickle.encode(author)
 
 if __name__ == '__main__':
     process_tweets()
