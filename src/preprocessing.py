@@ -34,12 +34,12 @@ def process_tweets():
 
 			#Collect and save tags
 			tags = []
-			tags.append(token.pos_ for token in tweet if token not in ignore)
+			tags.append(token.pos_ for token in tweet if token.text not in ignore)
 			authors[author].POS_tags.append(tags)
 
 			# Collect only the lemma form of the words. Only words with only alpha characters kept.
 			lemmas = []
-			lemmas.append([token.lemma_.lower() for token in tweet if (token.is_alpha and token not in ignore)])
+			lemmas.append([token.lemma_.lower() for token in tweet if (token.is_alpha and token.text not in ignore)])
 			authors[author].clean.append(" ".join(lemmas[0]))
 
 		__exportJSON__(authors[author])
@@ -60,7 +60,7 @@ def __exportJSON__(author, path='data/processed/'):
 	return
 
 def __convert_to_JSON__(author):
-	return jsonpickle.encode(author, unpicklable=False)
+	return jsonpickle.encode(author)
 
 if __name__ == '__main__':
     process_tweets()
