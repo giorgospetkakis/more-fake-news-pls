@@ -1,3 +1,4 @@
+import re
 import data
 import spacy
 import jsonpickle
@@ -17,9 +18,6 @@ def process_tweets():
 	authors = data.get_raw_data('en')
 	print('Authors loaded.')
 
-	# We don't want the url and hashtag denoters to be in this data collection
-	ignore = ['URL', 'HASHTAG']
-
 	print('Processing author data')
 
 	# So we can save easier later.
@@ -27,19 +25,20 @@ def process_tweets():
 	# Go through each author
 	for author in authors.keys():
 		# Pipe to go through the documents faster
-		for tweet in nlp.pipe(authors[author].tweets, disable=['parser']):
+		tweets_cleaned = [re.sub(r"HASHTAG|URL|RT|#|https:\/\/t\.\\[a-z\d]+|https.*$|\&*amp", "", tweet) for tweet in authors[author].tweets]
+		for tweet in nlp.pipe(tweets_cleaned, disable=['parser']):
 
 			#Named entity recognition
-			authors[author].ents.append([(str(ent.text), int(ent.label)) for ent in list(tweet.ents)])
+			authors[author].ents.append([(re.sub(r"USER", "", str(ent.text)), str(ent.label_)) for ent in list(tweet.ents) if str(ent.text) != "USER"])
 
 			#Collect and save tags
 			tags = []
-			tags.append(token.pos_ for token in tweet if token.text not in ignore)
+			tags.append(token.pos_ for token in tweet)
 			authors[author].POS_tags.append(tags)
 
 			# Collect only the lemma form of the words. Only words with only alpha characters kept.
 			lemmas = []
-			lemmas.append([token.lemma_.lower() for token in tweet if (token.is_alpha and (token.text not in ignore))])
+			lemmas.append([token.lemma_.lower() for token in tweet if (token.is_alpha)])
 			authors[author].clean.append(" ".join(lemmas[0]))
 
 		__exportJSON__(authors[author])
