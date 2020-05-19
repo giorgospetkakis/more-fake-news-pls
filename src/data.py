@@ -1,12 +1,14 @@
 ## Natural Language Processing 2 Final
 ## Sara, Flora, Giorgos
 
+import jsonpickle
 from bs4 import BeautifulSoup
 from os import listdir
 from os.path import isfile, join
 from utils import go_to_project_root
 
 RAW_DATA_PATH = "data/raw/"
+PREPROCESSED_DATA_PATH = "data/processed/"
 
 class Author:
         
@@ -84,3 +86,33 @@ def get_raw_data(lang='en'):
     '''
     go_to_project_root()
     return __import_from__(RAW_DATA_PATH + lang)
+
+def get_processed_data(lang='en'):
+    go_to_project_root()
+    file_list = [f for f in listdir(PREPROCESSED_DATA_PATH) if isfile(join(PREPROCESSED_DATA_PATH, f)) and f.split(".")[-1] == "json"]
+
+    authors = {}
+    for file in file_list:
+        f = open(join(PREPROCESSED_DATA_PATH, file), "r")
+        lines = "\n".join(f.readlines())
+        f.close()
+        authors[file.split(".")[0]] = jsonpickle.decode(lines, classes=Author)
+
+    return authors
+
+def exportJSON(author):
+    '''
+    Exports an author object to a JSON file
+    Parameters: 
+        author (Author):
+            The author to be serialized
+    Export: None
+    '''
+    path = PREPROCESSED_DATA_PATH
+    with open(f"{path}{author.author_id}.json", "w") as file:
+        file.writelines(__convert_to_JSON__(author))
+        file.close()
+    return
+
+def __convert_to_JSON__(author):
+    return jsonpickle.encode(author)
