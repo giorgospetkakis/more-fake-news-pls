@@ -15,7 +15,7 @@ def process_tweets():
 	ignore = ['HASHTAG', 'URL']
 
 	print('Loading authors')
-	nlp = spacy.load("en_core_web_sm")
+	nlp = spacy.load("en_core_web_md")
 	authors = data.get_raw_data('en')
 	print('Authors loaded.')
 
@@ -30,7 +30,7 @@ def process_tweets():
 		for tweet in nlp.pipe(tweets_cleaned, disable=['parser']):
 
 			#Named entity recognition
-			authors[author].ents.append([(re.sub(r"USER", "", str(ent.text)), str(ent.label_)) for ent in list(tweet.ents) if str(ent.text) != "USER"])
+			authors[author].ents.append([[re.sub(r"USER", "", str(ent.text)), str(ent.label_)] for ent in list(tweet.ents) if str(ent.text) != "USER"])
 
 			#Collect and save tags
 			tags = []
