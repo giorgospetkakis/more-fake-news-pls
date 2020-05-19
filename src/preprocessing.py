@@ -5,13 +5,14 @@ import jsonpickle
 from utils import go_to_project_root
 
 def process_tweets():
-
+	
 	'''
 	Currently just a function to call with no parameters.
 	Returns a dictionary of authors as defined in data.py with spacy-obtained attributes added.
 	Will hopefully update so we can save this into a JSON for quicker access. Is somewhat verbose.
 	Takes time. Please expect to spend a few minutes processing the data. 
 	'''
+	ignore = ['HASHTAG', 'URL']
 
 	print('Loading authors')
 	nlp = spacy.load("en_core_web_sm")
@@ -33,12 +34,12 @@ def process_tweets():
 
 			#Collect and save tags
 			tags = []
-			tags.append(token.pos_ for token in tweet)
+			tags.append(token.pos_ for token in tweet if token not in ignore)
 			authors[author].POS_tags.append(tags)
 
 			# Collect only the lemma form of the words. Only words with only alpha characters kept.
 			lemmas = []
-			lemmas.append([token.lemma_.lower() for token in tweet if (token.is_alpha)])
+			lemmas.append([token.lemma_.lower() for token in tweet if (token.is_alpha and token not in ignore)])
 			authors[author].clean.append(" ".join(lemmas[0]))
 
 		__exportJSON__(authors[author])
