@@ -4,13 +4,14 @@
 import re
 import spacy
 import numpy as np
+from sklearn.cluster import KMeans
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 def __clean_tweets__(tweets, pattern=None, clean_USER=False):
 	pattern = r"HASHTAG|URL|RT|#|https:\/\/t\.\\[a-z\d]+|https.*$|\&*amp"
 	if clean_USER:
 		pattern += r"|USER"
 	return [re.sub(pattern, "", tweet) for tweet in tweets]
-
 
 def extract_semantic_similarity(authors, model=None):
 	'''
@@ -176,3 +177,131 @@ def extract_clean_tweets(authors, model=None, ignore=["HASHTAG", "URL"]):
 
 	print('Done')
 	return(authors)
+
+def extract_fake_news_mcts(authors, n_models=50, k=3, threshold=1.0, _max_iter=5000, _n_init=5, data_split=0.6667):
+    '''
+    Extract the most common terms used by fake-news spreaders for the given authors.
+    Trains an n_models number of models and takes the intersection of the most common terms used by fake news spreaders.
+    Uses k-means and tf-idf
+
+    Parameters:
+        authors(Author dict):
+            The authors to calculate the most common terms for
+
+        n_models(int):
+            The number of models to train
+            Default is 50.
+
+        k(int):
+            The number of clusters for each model
+            Default is 3
+
+        _max_iter(int):
+            The maximum number of iterations for each model
+            Default is 5000
+
+        _n_init(int):
+            The number of initializations the k-means model will do. Returns the best one.
+            Default is 5
+
+        data_split(float):
+            The splitting point between the testing set and training set for the data.
+            Default is 60%
+    '''
+
+    print("Loading data...")
+
+    # Get truth values
+    truths = [auth.truth for auth in list(authors.values())]
+    # Get NER values 
+    entities = [auth.ents for auth in list(authors.values())]
+
+    # Handle case of empty named entities
+    if (entities[0] == []):
+        print("Authors contain no named entities. Calculating...")
+        authors = extract_named_entities(authors)
+        entities = [auth.ents for auth in list(authors.values())]
+
+    # Some cleanup for the vectorization
+    for i in range(len(entities)):
+        entry = entities[i]
+        entities[i] = [e[0] for e in entry if len(e) > 0]
+
+	# Make sure two+ word named entities are handled as single words
+    tweets = []
+    for i, e in enumerate(entities):
+        tweets += [" ".join([re.sub(r" ", "_", x[0]) for x in e])]
+
+    # This will be the list of sets of most common terms used by fake news spreaders
+    list_of_sets = []
+
+    # The split of training vs. testing data
+    split = int(len(tweets) * data_split)
+    tweetsTrain = tweets[:split]
+    tweetsTest = tweets[split:]
+
+    print("Creating models...")
+    while len(list_of_sets) < n_models:
+
+        # Create model from the vectorizer
+        vectorizer = TfidfVectorizer(stop_words='english')
+        X = vectorizer.fit_transform(tweetsTrain)
+        model = KMeans(n_clusters=k, algorithm="full", init='k-means++', max_iter=_max_iter, n_init=_n_init)
+        model.fit(X)
+
+        # Order the centroids 
+        order_centroids = model.cluster_centers_.argsort()[:, ::-1]
+        terms = vectorizer.get_feature_names()
+
+        # Generate predictions based on the test set
+        pred = np.zeros((len(tweetsTest), 2))
+        for i, tw in enumerate(tweetsTest):
+            X = vectorizer.transform([tw])
+            predicted = model.predict(X)
+            pred[i] = [int(predicted), truths[i + split]]
+
+        # Fetch predictions results
+        res = [(pred[np.where(pred[:, 1]==k)])[:,0] for k in range(2)]
+        
+        # Calculate the cluster with the maximum purity
+        max_purity = 0 ; pure_cluster = -1
+        for c in range(k):
+            class_a = len(np.where(res[0]==c)[0])
+            class_b = len(np.where(res[1]==c)[0])
+
+            class_sum = class_a + class_b
+            if class_sum != 0:
+                purity = abs(0.5 - class_a / class_sum) * (class_sum/len(tweetsTest)) * 10
+            else:
+                purity = 0
+            if purity > max_purity:
+                pure_cluster = c
+                max_purity = purity
+
+        # Check if there is a cluster with very high purity
+        if max_purity >= threshold:
+            list_of_sets += [set()]
+            if len(list_of_sets) % (n_models / 4) == 0 and len(list_of_sets) > 0:
+                print(f"{len(list_of_sets) / (n_models)}% of requested models trained")
+            for ind in order_centroids[pure_cluster,:100]:
+                # Add it to the list of sets
+                list_of_sets[-1].add(terms[ind])
+    
+    # Calculate the final set as an intersection of all sets identified
+    final_set = list_of_sets[0]
+    for s in list_of_sets:
+        final_set = final_set.intersection(s)
+
+    for author in authors.keys():
+        # Get cleaned values
+        cleaned = " ".join(authors[author].clean)
+        count = 0
+
+        # Count the number of terms in each author
+        for term in list(final_set):
+            count += cleaned.count(term)
+
+        # Save to author
+        authors[author].most_common_ner_score = count
+
+    return authors, final_set

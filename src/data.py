@@ -65,6 +65,8 @@ class Author:
         number_identical(int):
             The number of identical tweets a user has tweeted.
 
+        most_common_ner_score(int):
+            The number of times one of the most common words used by fake news spreaders is used by this user.
     '''
     def __init__(self, author_id, tweets, truth):
         self.author_id = author_id
@@ -78,6 +80,7 @@ class Author:
         self.min_similar = None
         self.mean_similar = None
         self.number_identical = None
+        self.most_common_ner_score = None
 
 def __get_truth_vals__(directory):
     truth_dict = {}
