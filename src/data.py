@@ -8,7 +8,7 @@ from os.path import isfile, join
 from utils import go_to_project_root
 
 RAW_DATA_PATH = "data/raw/"
-PREPROCESSED_DATA_PATH = "data/processed/"
+PREPROCESSED_DATA_PATH = "data/interim/json/"
 
 class Author:
         
