@@ -30,7 +30,7 @@ def process_tweets():
 		for tweet in nlp.pipe(tweets_cleaned, disable=['parser']):
 
 			#Named entity recognition
-			authors[author].ents.append([(re.sub(r"USER", "", str(ent.text)), str(ent.label_)) for ent in list(tweet.ents) if str(ent.text) != "USER"])
+			authors[author].ents.append([[re.sub(r"USER", "", str(ent.text)), str(ent.label_)] for ent in list(tweet.ents) if str(ent.text) != "USER"])
 
 			#Collect and save tags
 			tags = []
