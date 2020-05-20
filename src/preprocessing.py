@@ -15,7 +15,7 @@ def process_tweets():
 	ignore = ['HASHTAG', 'URL']
 
 	print('Loading authors')
-	nlp = spacy.load("en_core_web_sm")
+	nlp = spacy.load("en_core_web_md")
 	authors = data.get_raw_data('en')
 	print('Authors loaded.')
 
@@ -52,3 +52,4 @@ if __name__ == '__main__':
 # # To compare noun chunking vs named entity recognition.
 # print([chunk.text for chunk in nlp(authors['06ct0t68y1acizh9eow3g5rhancrppr8'].tweets[9]).noun_chunks])
 # print([ent.label_ for ent in nlp(authors['06ct0t68y1acizh9eow3g5rhancrppr8'].tweets[9]).ents])
+

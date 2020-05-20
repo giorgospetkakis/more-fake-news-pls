@@ -45,6 +45,19 @@ class Author:
         The nested list contains a sequence (separated by spaces) of the lemmas of the words. URL and HASHTAGS notes have been removed.
         '''
 
+        self.similarities = None
+        '''
+        Contains an array of the similarity measure (between 0 and 1) of two tweets indexed on the two axes.
+        Half an array (values are not repeated). Empty values are filled in as -1.
+        Saved for now, but perhaps would be wise to conserve only what we need?
+        From this row, we save the following features: max similarity, min similarity, number of identical tweets, and mean similarity.
+        '''
+
+        self.max_similar = None
+        self.min_similar = None
+        self.mean_similar = None
+        self.number_identical = None
+
 def __get_truth_vals__(directory):
     truth_dict = {}
     for f in listdir(directory):
