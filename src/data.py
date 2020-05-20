@@ -11,48 +11,69 @@ RAW_DATA_PATH = "data/raw/"
 PREPROCESSED_DATA_PATH = "data/interim/json/"
 
 class Author:
+    '''
+    Class members:
+        author_id(str):
+            The author id and filename
+            
+        truth(int):
+            The author's fake news status- 1 means fake news, 0 non-fake news
+
+        tweets(list):
+            A list of all raw tweets for the given author
+
+        ents(list):
+            Contains the named entities for each tweet retrieved from spaCy.
+            
+            The first coordinate in the list refers to the tweet number.
+            The nested list contains tuples of the named entities located in the tweet
+
+            To access the entity type (e.g. PERSON), call .label_ (fx. author.ents[0][0].label_ )
+            To access the entity name (e.g. Joe Jonas), call .text (fx. author.ents[0][0].text )
+
+            To understand the labels, look here: https://spacy.io/api/annotation
+
+        POS_tags(list)
+            The Part-Of-Speech tags for each tweet retrieved from spaCy.
+
+            The first coordinate of the list refers to the tweet of the author
+            The nested list contains a list of the sequence of POS tags of tweet.
+
+            To understand the tags look here: https://spacy.io/api/annotation (We use the coarse-grained tags)
         
+        clean(list):
+            A version of the tweets with non-alpha characters have been removed.
+            URL and HASHTAGS notes have also been removed.
+
+            The first coordinate of the list refers to the tweet of the author
+            The nested list contains a sequence (separated by spaces) of the lemmas of the words. 
+        
+        similarities(np array):
+            Contains an array of the similarity measure (between 0 and 1) of two tweets indexed on the two axes.
+            Half an array (values are not repeated). Empty values are filled in as -1.
+            Saved for now, but perhaps would be wise to conserve only what we need?
+
+        max_similar(np float64):
+            The value of similarity between the user's most similar tweets. 
+
+        min_similar(np float64):
+            The value of similarity between the user's least similar tweets.
+
+        mean_similar(np float64):
+            The mean similarity across the user's tweets.
+
+        number_identical(int):
+            The number of identical tweets a user has tweeted.
+
+    '''
     def __init__(self, author_id, tweets, truth):
         self.author_id = author_id
         self.truth = truth
         self.tweets = tweets
-
         self.ents = []
-
-        ''' 
-        The ents variable contains a list of lists.
-        The first coordinate in the list refers to the tweet number.
-        The nested list contains tuples of the named entities located in the tweet
-            To access the entity type (e.g. PERSON), call .label_ (fx. author.ents[0][0].label_ )
-            To access the entity name (e.g. Joe Jonas), call .text (fx. author.ents[0][0].text )
-        To understand the labels, look here: https://spacy.io/api/annotation
-        '''
-
         self.POS_tags = []
-
-        ''' 
-        The POS_tags variable contains a list of list.
-        The first coordinate of the list refers to the tweet of the author
-        The nested list contains a list of the sequence of POS tags of tweet.
-        To understand the tags look here: https://spacy.io/api/annotation (We use the coarse-grained tags)
-        '''
-
         self.clean = []
-
-        ''' 
-        The lemma variable contains a list of list. All non-alpha characters have been removed from the text.
-        The first coordinate of the list refers to the tweet of the author
-        The nested list contains a sequence (separated by spaces) of the lemmas of the words. URL and HASHTAGS notes have been removed.
-        '''
-
         self.similarities = None
-        '''
-        Contains an array of the similarity measure (between 0 and 1) of two tweets indexed on the two axes.
-        Half an array (values are not repeated). Empty values are filled in as -1.
-        Saved for now, but perhaps would be wise to conserve only what we need?
-        From this row, we save the following features: max similarity, min similarity, number of identical tweets, and mean similarity.
-        '''
-
         self.max_similar = None
         self.min_similar = None
         self.mean_similar = None
@@ -85,22 +106,47 @@ def __parse_tweets__(filepath):
     tweets = soup.find_all('document')
     return [t.get_text() for t in tweets]
 
+def convert_to_JSON(author):
+    '''
+    Converts a given author to its JSON equivalent.
+
+    Parameters:
+        author(Author):
+            The author to be converted
+    '''
+    return jsonpickle.encode(author)
+
 def get_raw_data(lang='en'):
     '''
     Returns the raw data in the selected language.
+    Default is English
 
     Parameters:
         lang (str): 
-            The return language. Valid options: 'en', 'es'.
+            The return language. 
+            Valid options: 'en', 'es'.
 
     Returns:
         data (dict): 
-            A dictionary containing all the author information in the selected language.
+            A dictionary containing all the raw author information in the selected language.
     '''
     go_to_project_root()
     return __import_from__(RAW_DATA_PATH + lang)
 
 def get_processed_data(lang='en'):
+    '''
+    Returns the processed author data in the selected language.
+    Default is English
+
+    Parameters:
+        lang (str): 
+            The return language. 
+            Valid options: 'en', 'es'.
+
+    Returns:
+        data (dict): 
+            A dictionary containing all the processed author information in the selected language.
+    '''
     go_to_project_root()
     file_list = [f for f in listdir(PREPROCESSED_DATA_PATH) if isfile(join(PREPROCESSED_DATA_PATH, f)) and f.split(".")[-1] == "json"]
 
@@ -123,9 +169,6 @@ def exportJSON(author):
     '''
     path = PREPROCESSED_DATA_PATH
     with open(f"{path}{author.author_id}.json", "w") as file:
-        file.writelines(__convert_to_JSON__(author))
+        file.writelines(convert_to_JSON(author))
         file.close()
     return
-
-def __convert_to_JSON__(author):
-    return jsonpickle.encode(author)
