@@ -1,8 +1,6 @@
 import re
-import data
 import spacy
 import jsonpickle
-from utils import go_to_project_root
 
 def process_tweets(authors):
 	'''
@@ -19,8 +17,6 @@ def process_tweets(authors):
 
 	print('Processing author data')
 
-	# So we can save easier later.
-	go_to_project_root()
 	# Go through each author
 	for author in authors.keys():
 		# Pipe to go through the documents faster

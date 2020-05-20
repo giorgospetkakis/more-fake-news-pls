@@ -1,18 +1,13 @@
 ## Natural Language Processing 2 Final
 ## Sara, Flora, Giorgos
 
-import data
 import spacy
-from utils import go_to_project_root
 import numpy as np
 
 def process_semantic_similarity(authors):
 	print("Acquiring data")
 	nlp = spacy.load("en_core_web_md")
 	print("Beginning to extract author semantic similarity. This may take some time.")
-	
-	# So we can save easier later.
-	go_to_project_root()
 
 	for author in authors.keys():
 
