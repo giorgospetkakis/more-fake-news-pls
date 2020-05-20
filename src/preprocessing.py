@@ -4,19 +4,17 @@ import spacy
 import jsonpickle
 from utils import go_to_project_root
 
-def process_tweets():
-	
+def process_tweets(authors):
 	'''
-	Currently just a function to call with no parameters.
+	Parameter is the dict of authors
 	Returns a dictionary of authors as defined in data.py with spacy-obtained attributes added.
 	Will hopefully update so we can save this into a JSON for quicker access. Is somewhat verbose.
 	Takes time. Please expect to spend a few minutes processing the data. 
 	'''
 	ignore = ['HASHTAG', 'URL']
 
-	print('Loading authors')
+	print('Loading spacy data')
 	nlp = spacy.load("en_core_web_md")
-	authors = data.get_raw_data('en')
 	print('Authors loaded.')
 
 	print('Processing author data')
@@ -42,12 +40,8 @@ def process_tweets():
 			lemmas.append([token.lemma_.lower() for token in tweet if (token.is_alpha and token.text not in ignore)])
 			authors[author].clean.append(" ".join(lemmas[0]))
 
-		data.exportJSON(authors[author])
 	print('Data processed and saved')
 	return(authors)
-
-if __name__ == '__main__':
-    process_tweets()
 
 # # To compare noun chunking vs named entity recognition.
 # print([chunk.text for chunk in nlp(authors['06ct0t68y1acizh9eow3g5rhancrppr8'].tweets[9]).noun_chunks])
