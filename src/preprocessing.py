@@ -14,7 +14,9 @@ def convert_to_df(authors, export=False):
     Parameters:
         authors (Author dict):
             The authors to be converted.
-        export
+        export (Boolean):
+            Whether the function will export to file.
+            False by default
     Returns:
         pandas DataFrame
     '''
