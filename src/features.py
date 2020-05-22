@@ -2,6 +2,8 @@
 ## Sara, Flora, Giorgos
 
 import re
+import data
+import emoji
 import spacy
 import numpy as np
 from sklearn.cluster import KMeans
@@ -11,7 +13,14 @@ def __clean_tweets__(tweets, pattern=None, clean_USER=False):
 	pattern = r"HASHTAG|URL|RT|#|https:\/\/t\.\\[a-z\d]+|https.*$|\&*amp"
 	if clean_USER:
 		pattern += r"|USER"
-	return [re.sub(pattern, "", tweet) for tweet in tweets]
+	clean_tweets = []
+	for tweet in tweets:
+		clean = re.sub(pattern, '', tweet)
+		clean = emoji.get_emoji_regexp().sub(r'', clean)
+		clean = clean.strip()
+		clean_tweets.append(clean)
+
+	return clean_tweets
 
 def extract_semantic_similarity(authors, model=None):
 	'''
@@ -305,3 +314,81 @@ def extract_fake_news_mcts(authors, n_models=50, k=3, threshold=1.0, _max_iter=5
         authors[author].most_common_ner_score = count
 
     return authors, final_set
+
+
+def extract_nonlinguistic_features(authors):
+
+	for author in authors.keys():
+
+		#Initialize the dictionary with 0's. We will update incrementally
+		nonlinguistic_tags = ['url', 'hashtag', 'user', 'emoji', 'exclamation', 'period', 'question', 'comma']
+		authors[author].nonlinguistic_features = {
+													'mean_words' : 0,
+			                                        'retweet_percentage' : 0,
+			                                        'allcaps_ratio' : 0,
+			                                        'allcaps_inclusion_ratio' : 0,
+			                                        'titlecase_ratio'  : 0
+			                                        }
+		for tag in nonlinguistic_tags:
+			authors[author].nonlinguistic_features['{}_mean'.format(tag)] = 0
+			authors[author].nonlinguistic_features['{}_max'.format(tag)] = 0
+
+		N = len(authors[author].tweets)
+
+		for tweet in authors[author].tweets: # Looping through all tweets for a given author
+			# Use .count() to count the various substrings
+			url_count = tweet.count('#URL#')
+			hashtag_count = tweet.count('#HASHTAG#')
+			user_count = tweet.count('#USER#')
+			retweet_count = tweet.count('[RT ')
+			word_count = len(list(filter(None, re.split('[ -]', __clean_tweets__([tweet])[0]))))
+			nonword_count = url_count + hashtag_count + user_count + retweet_count
+
+			authors[author].nonlinguistic_features['url_mean'] += url_count/N #Divide by the number as you calculate the mean
+			if tweet.count('#URL#') > authors[author].nonlinguistic_features['url_max']:
+				authors[author].nonlinguistic_features['url_max'] = url_count #Update the max number of URL counts if larger than what is saved
+			authors[author].nonlinguistic_features['hashtag_mean'] +=	hashtag_count/N
+			if tweet.count('#HASHTAG#') > authors[author].nonlinguistic_features['hashtag_max']:
+				authors[author].nonlinguistic_features['hashtag_max'] =	hashtag_count
+			authors[author].nonlinguistic_features['user_mean'] += user_count/N
+			if tweet.count('#USER#') > authors[author].nonlinguistic_features['user_max']:
+				authors[author].nonlinguistic_features['user_max'] = user_count
+			authors[author].nonlinguistic_features['exclamation_mean'] += tweet.count('!')/N
+			if tweet.count('!') > authors[author].nonlinguistic_features['exclamation_max']:
+				authors[author].nonlinguistic_features['exclamation_max'] = tweet.count('!')
+			authors[author].nonlinguistic_features['period_mean'] += tweet.count('.')/N
+			if tweet.count('.') > authors[author].nonlinguistic_features['period_max']:
+				authors[author].nonlinguistic_features['period_max'] = tweet.count('.')
+			authors[author].nonlinguistic_features['question_mean'] += tweet.count('?')/N
+			if tweet.count('?') > authors[author].nonlinguistic_features['question_max']:
+				authors[author].nonlinguistic_features['question_max'] = tweet.count('?')
+			authors[author].nonlinguistic_features['comma_mean'] += tweet.count(',')/N
+			if tweet.count(',') > authors[author].nonlinguistic_features['comma_max']:
+				authors[author].nonlinguistic_features['comma_max'] = tweet.count(',')
+			# Not perfect. can use some improvement, but good enough for now. 
+			authors[author].nonlinguistic_features['emoji_mean'] += len(re.findall(u'[\U0001f600-\U0001f650]', tweet))/N
+			if len(re.findall(u'[\U0001f600-\U0001f650]', tweet)) > authors[author].nonlinguistic_features['emoji_max']:
+				authors[author].nonlinguistic_features['emoji_max'] = len(re.findall(u'[\U0001f600-\U0001f650]', tweet))
+
+
+			# Other linguistic features that do not follow the above pattern
+			authors[author].nonlinguistic_features['mean_words'] += (word_count - nonword_count)/N
+			authors[author].nonlinguistic_features['retweet_percentage'] += retweet_count/N
+
+			# To calculate capitalization percentage, first count all allcaps substrings, remove all the #USER# #URL# #HASHTAG#
+			# Then take the ratio of the adjusted count of the all caps words to the adjusted counts of other words in the tweet
+			# Divide by N so that after all of the tweets it will not exceed 100%
+			# Only if there are still real words left after removing all the tags (so we don't divide by 0 lol)
+			if word_count > nonword_count:
+				authors[author].nonlinguistic_features['allcaps_ratio'] += ( sum(map(str.isupper, re.split('[ -]', tweet))) - nonword_count ) / (word_count - nonword_count)/N
+				authors[author].nonlinguistic_features['titlecase_ratio'] += ( sum(map(str.istitle, re.split('[ -]', tweet))) - nonword_count ) / (word_count - nonword_count)/N
+
+			if ((sum(map(str.isupper, tweet.split(' '))) - nonword_count ) > 0):
+				authors[author].nonlinguistic_features['allcaps_inclusion_ratio'] += 1/N
+
+	return (authors)
+
+authors = data.get_processed_data()
+authors = extract_nonlinguistic_features(authors)
+for author in authors.keys():
+	data.exportJSON(authors[author])

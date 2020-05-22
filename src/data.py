@@ -67,6 +67,26 @@ class Author:
 
         most_common_ner_score(int):
             The number of times one of the most common words used by fake news spreaders is used by this user.
+
+        adjectives(dict):
+            Contains a dictionary of adjectives used by the user and the number of times each adjective is used.
+
+        POS_counts(dict):
+            Contains the mean count per tweet and the max count in a tweet of every POS tag.
+            tags = ['ADJ' ,'ADP', 'ADV', 'AUX' , 'CONJ' , 'CCONJ' , 'DET' , 'INTJ' , 'NOUN' ,
+             'NUM' , 'PART' , 'PRON' , 'PROPN' , 'PUNCT' , 'SCONJ' , 'SYM' , 'VERB' ,'X' , 'SPACE']
+            Dictionary entries are saved as either {tag}_mean or {tag}_max
+                f.x. POS_counts['ADJ_mean'] returns the mean number of adjectives per tweet.
+
+        nonlinguistic_features(dict):
+            Contains the extracted nonlinguistic features of each tweet and saves counts of the maximum number
+            and mean number of a non-linguistic feature in a tweet for an author.
+            features = url, hashtag, user, punctuation, exclamation, question, period, comma, emoji
+            Emoji extraction is not perfect, but it is ok.
+            Also has contains the mean words per tweet, percentage of retweets, and some information on capitalization
+            allcaps_ratio refers to how much of the words they've tweeted are in all caps
+            allcaps_inclusion_ratio refers to the percentage of tweets contains a word in all caps
+            titlecase_ratio refers to how many of their tweets are in titlecase (e.g. Written Like This)
     '''
     def __init__(self, author_id, tweets, truth):
         self.author_id = author_id
@@ -81,6 +101,36 @@ class Author:
         self.mean_similar = None
         self.number_identical = None
         self.most_common_ner_score = None
+        self.adjectives = {}
+        self.POS_counts = {}
+        tag_list = ['ADJ' ,'ADP', 'ADV', 'AUX' , 'CONJ' , 'CCONJ' , 'DET' , 'INTJ' , 'NOUN' , 'NUM' , 'PART' , 'PRON' , 'PROPN' , 'PUNCT' , 'SCONJ' , 'SYM' , 'VERB' ,'X' , 'SPACE']
+
+        for tag in tag_list:
+            self.POS_counts['{}_mean'.format(tag)] = None
+            self.POS_counts['{}_max'.format(tag)] = None
+
+        self.nonlinguistic_features = { 'url_max' : None,
+                                        'url_mean' : None,
+                                        'hashtag_max' : None,
+                                        'hashtag_mean' : None,
+                                        'user_max' : None,
+                                        'user_mean' : None,
+                                        'emoji_mean' : None,
+                                        'emoji_max' : None,
+                                        'exclamation_mean' : None,
+                                        'exclamation_max' : None,
+                                        'period_mean' : None,
+                                        'period_max' : None,
+                                        'question_mean' : None,
+                                        'question_max' : None,
+                                        'comma_mean' : None,
+                                        'comma_max' : None,
+                                        'allcaps_ratio' : None,
+                                        'allcaps_inclusion_ratio' : None,
+                                        'titlecase_ratio' : None,
+                                        'mean_words' : None,
+                                        'retweet_percentage' : None,
+                                        }
 
 def __get_truth_vals__(directory):
     truth_dict = {}
