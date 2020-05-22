@@ -256,7 +256,7 @@ def get_prepared_data(split=0.667, norm=True, pca=None):
     if pca:
         X = PCA(n_components=pca).fit_transform(X)
 
-    _s = int(X.shape * split)
+    _s = int(X.shape[0] * split)
     xtrain = X[_s:]
     ytrain = y[_s:]
 
