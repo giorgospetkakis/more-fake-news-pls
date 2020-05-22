@@ -74,6 +74,9 @@ class Author:
         most_common_ner_score(int):
             The number of times one of the most common words used by fake news spreaders is used by this user.
 
+        most_common_adj_score(int):
+            The number of times one of the most common words used by fake news spreaders is used by this user.
+
         adjectives(dict):
             Contains a dictionary of adjectives used by the user and the number of times each adjective is used.
 
@@ -109,6 +112,7 @@ class Author:
         self.mean_similar = None
         self.number_identical = None
         self.most_common_ner_score = None
+        self.most_common_adj_score = None
         self.adjectives = {}
         self.POS_counts = {}
         tag_list = ['ADJ' ,'ADP', 'ADV', 'AUX' , 'CONJ' , 'CCONJ' , 'DET' , 'INTJ' , 'NOUN' , 'NUM' , 'PART' , 'PRON' , 'PROPN' , 'PUNCT' , 'SCONJ' , 'SYM' , 'VERB' ,'X' , 'TOKEN']

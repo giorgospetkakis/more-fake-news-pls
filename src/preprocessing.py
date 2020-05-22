@@ -22,7 +22,7 @@ def convert_to_df(authors, export=False):
     '''
     # Can't not hard-code this
     # Create table, fill table, convert to dataframe, name columns, return
-    table = np.zeros((len(list(authors.values())), 46))
+    table = np.zeros((len(list(authors.values())), 47))
 
     for i, a in enumerate(list(authors.values())):
         table[i] = [
@@ -34,6 +34,7 @@ def convert_to_df(authors, export=False):
 
             # NER / Clustring
             a.most_common_ner_score,
+            a.most_common_adj_score,
             
             # Non-Linguistic
             a.nonlinguistic_features['url_max'],
@@ -88,7 +89,8 @@ def convert_to_df(authors, export=False):
         "min_similar", 
         "mean_similar", 
         "number_identical", 
-        "most_common_ner_score",
+        "mcts_ner",
+        "mcts_adj",
         'url_max',
         'url_mean',
         'hashtag_max',
