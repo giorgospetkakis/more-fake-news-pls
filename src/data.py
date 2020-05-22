@@ -6,6 +6,8 @@ import pandas
 from bs4 import BeautifulSoup
 from os import listdir
 from os.path import isfile, join
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
 from utils import go_to_project_root
 
 RAW_DATA_PATH = "data/raw/"
@@ -221,6 +223,47 @@ def get_csv():
     '''
     go_to_project_root()
     return pandas.read_csv(CSV_DATA_PATH, index_col=0)
+
+def get_prepared_data(split=0.667, norm=True, pca=None):
+    '''
+    Return prepared data for easy modeling.
+
+    Parameters:
+        split(float):
+            The 0-1 ratio of data in the training set.
+        norm(boolean):
+            Whether or not to normalize the data set.
+        pca(int):
+            Returns the given number of Principal Components. 
+            Leave blank to return all features.
+    
+    Returns:
+        xtrain, ytrain, xtest, ytest
+    '''
+    df = get_csv()
+    table = df.to_numpy()
+
+    # Split X and Y
+    X = table[:,:-1]
+    y = table[:,-1]
+
+    # Normalize
+    if norm:
+        scaler = StandardScaler()
+        X = scaler.fit_transform(X)
+    
+    # Extract only first n principal components
+    if pca:
+        X = PCA(n_components=pca).fit_transform(X)
+
+    _s = int(X.shape * split)
+    xtrain = X[_s:]
+    ytrain = y[_s:]
+
+    xtest = X[:_s]
+    ytest = y[:_s]
+
+    return xtrain, ytrain, xtest, ytest
 
 def convert_to_JSON(author):
     '''
