@@ -317,6 +317,10 @@ def extract_fake_news_mcts(authors, n_models=50, k=3, threshold=1.0, _max_iter=5
 
 
 def extract_nonlinguistic_features(authors):
+	'''
+	Extract the features stored in the nonlinguistic_features dict attribute on the author class.
+	Takes dictionary of authors as an input and returns the modified version.
+	'''
 
 	for author in authors.keys():
 
@@ -388,7 +392,55 @@ def extract_nonlinguistic_features(authors):
 
 	return (authors)
 
-authors = data.get_processed_data()
-authors = extract_nonlinguistic_features(authors)
-for author in authors.keys():
-	data.exportJSON(authors[author])
+def extract_POS_features(authors):
+	'''
+	Extract the features stored in the POS_count dict attribute on the author class. Also updates the POS_tags
+	as has previously been extracted (as was done incorrectly).
+	Takes dictionary of authors as an input and returns the modified version.
+	'''
+	print("This may take some time.")
+	nlp = spacy.load("en_core_web_md")
+	print("Language model imported.")
+	for author in authors.keys():
+
+		# First we remake the POS tags list as was incorrectly saved.
+		cleaned = __clean_tweets__(authors[author].tweets)
+		authors[author].POS_tags = []
+		authors[author].tokens = []
+		for tweet in nlp.pipe(cleaned, disable=['parser']):
+		    #Collect and save tags
+		    tags = []
+		    text = []
+		    tags.append([str(token.pos_) for token in tweet])
+		    text.append([str(token.text) for token in tweet])
+		    authors[author].POS_tags.append(tags[0])
+		    authors[author].tokens.append(text[0])
+
+		N=len(authors[author].tweets)
+
+		authors[author].adjectives = {}
+		authors[author].POS_counts = {}
+
+		# Now we go through each tweet and each POS tag and make a count of how many times each tag is used
+		# If the tag is ADJ, we take the adjective used (using token) and add it to our adjective dictionary.
+		# TOKEN refers to all tokens. So we can determine afterwards a percentage based on how long their tweets are (in terms of tokens)
+		tag_list = ['ADJ' ,'ADP', 'ADV', 'AUX' , 'CONJ' , 'CCONJ' , 'DET' , 'INTJ' , 'NOUN' , 'NUM' , 'PART' , 'PRON' , 'PROPN' , 'PUNCT' , 'SCONJ' , 'SYM' , 'VERB' ,'X' , 'SPACE', 'TOKEN']
+		for tag in tag_list:
+		    authors[author].POS_counts['{}_mean'.format(tag)] = 0
+		    
+		for i_tweet in range(len(authors[author].POS_tags)):
+		     for j_tag in range(len(authors[author].POS_tags[i_tweet])):
+		            authors[author].POS_counts['{}_mean'.format(authors[author].POS_tags[i_tweet][j_tag])] += 1/N #We are taking the running average by dividing by N
+		            authors[author].POS_counts['TOKEN_mean'] += 1/N #Take running average of how many tokens usually per tweet
+
+		            #Check if adjective. If so add to our adjectives dictionary
+		            if authors[author].POS_tags[i_tweet][j_tag] == 'ADJ':
+		                if authors[author].tokens[i_tweet][j_tag].lower() in authors[author].adjectives.keys():
+		                    authors[author].adjectives[authors[author].tokens[i_tweet][j_tag].lower()] += 1
+		                else:
+		                    authors[author].adjectives[authors[author].tokens[i_tweet][j_tag].lower()] = 1
+
+		# This is useless and affected a lot by our preprocessing, so I'm removing it so it doesn't affect our model in a dumb way.
+		authors[author].POS_counts.pop('SPACE_mean')
+		print("|",end='')
+	return authors

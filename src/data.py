@@ -40,6 +40,12 @@ class Author:
             The nested list contains a list of the sequence of POS tags of tweet.
 
             To understand the tags look here: https://spacy.io/api/annotation (We use the coarse-grained tags)
+
+        tokens(list):
+            The token corresponding to each POS_tag as listed above. As extract by spaCy.
+
+            The first coordinate of the list refers to the tweet of the author
+            The nested list contains a list of the sequence of POS tags of tweet.
         
         clean(list):
             A version of the tweets with non-alpha characters have been removed.
@@ -72,10 +78,11 @@ class Author:
             Contains a dictionary of adjectives used by the user and the number of times each adjective is used.
 
         POS_counts(dict):
-            Contains the mean count per tweet and the max count in a tweet of every POS tag.
+            Contains the mean count per tweet of every POS tag. (May expand to include maximum counts in a single tweet)
             tags = ['ADJ' ,'ADP', 'ADV', 'AUX' , 'CONJ' , 'CCONJ' , 'DET' , 'INTJ' , 'NOUN' ,
-             'NUM' , 'PART' , 'PRON' , 'PROPN' , 'PUNCT' , 'SCONJ' , 'SYM' , 'VERB' ,'X' , 'SPACE']
-            Dictionary entries are saved as either {tag}_mean or {tag}_max
+             'NUM' , 'PART' , 'PRON' , 'PROPN' , 'PUNCT' , 'SCONJ' , 'SYM' , 'VERB' ,'X' , TOKEN']
+            SPACE is listed as a POS_tag above, but they are removed from the dictionary as the numbers are affected by our preprocessing.
+            Dictionary entries are saved as either {tag}_mean
                 f.x. POS_counts['ADJ_mean'] returns the mean number of adjectives per tweet.
 
         nonlinguistic_features(dict):
@@ -94,6 +101,7 @@ class Author:
         self.tweets = tweets
         self.ents = []
         self.POS_tags = []
+        self.tokens = []
         self.clean = []
         self.similarities = None
         self.max_similar = None
@@ -103,11 +111,11 @@ class Author:
         self.most_common_ner_score = None
         self.adjectives = {}
         self.POS_counts = {}
-        tag_list = ['ADJ' ,'ADP', 'ADV', 'AUX' , 'CONJ' , 'CCONJ' , 'DET' , 'INTJ' , 'NOUN' , 'NUM' , 'PART' , 'PRON' , 'PROPN' , 'PUNCT' , 'SCONJ' , 'SYM' , 'VERB' ,'X' , 'SPACE']
+        tag_list = ['ADJ' ,'ADP', 'ADV', 'AUX' , 'CONJ' , 'CCONJ' , 'DET' , 'INTJ' , 'NOUN' , 'NUM' , 'PART' , 'PRON' , 'PROPN' , 'PUNCT' , 'SCONJ' , 'SYM' , 'VERB' ,'X' , 'TOKEN']
 
         for tag in tag_list:
             self.POS_counts['{}_mean'.format(tag)] = None
-            self.POS_counts['{}_max'.format(tag)] = None
+            #self.POS_counts['{}_max'.format(tag)] = None
 
         self.nonlinguistic_features = { 'url_max' : None,
                                         'url_mean' : None,
