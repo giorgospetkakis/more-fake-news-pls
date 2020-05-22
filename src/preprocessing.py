@@ -1,55 +1,142 @@
-import re
+## Natural Language Processing 2 Final
+## Sara, Flora, Giorgos
+
 import data
-import spacy
-import jsonpickle
 from utils import go_to_project_root
+import numpy as np
+import pandas as pd
 
-def process_tweets():
-	
-	'''
-	Currently just a function to call with no parameters.
-	Returns a dictionary of authors as defined in data.py with spacy-obtained attributes added.
-	Will hopefully update so we can save this into a JSON for quicker access. Is somewhat verbose.
-	Takes time. Please expect to spend a few minutes processing the data. 
-	'''
-	ignore = ['HASHTAG', 'URL']
+filepath = 'data/processed/'
 
-	print('Loading authors')
-	nlp = spacy.load("en_core_web_md")
-	authors = data.get_raw_data('en')
-	print('Authors loaded.')
+def convert_to_df(authors, export=False):
+    '''
+    Converts the given authors to a pandas DataFrame.
+    Parameters:
+        authors (Author dict):
+            The authors to be converted.
+        export (Boolean):
+            Whether the function will export to file.
+            False by default
+    Returns:
+        pandas DataFrame
+    '''
+    # Can't not hard-code this
+    # Create table, fill table, convert to dataframe, name columns, return
+    table = np.zeros((len(list(authors.values())), 47))
 
-	print('Processing author data')
+    for i, a in enumerate(list(authors.values())):
+        table[i] = [
+            # Semantic Similarity
+            a.max_similar, 
+            a.min_similar, 
+            a.mean_similar, 
+            a.number_identical, 
 
-	# So we can save easier later.
-	go_to_project_root()
-	# Go through each author
-	for author in authors.keys():
-		# Pipe to go through the documents faster
-		tweets_cleaned = [re.sub(r"HASHTAG|URL|RT|#|https:\/\/t\.\\[a-z\d]+|https.*$|\&*amp", "", tweet) for tweet in authors[author].tweets]
-		for tweet in nlp.pipe(tweets_cleaned, disable=['parser']):
+            # NER / Clustring
+            a.most_common_ner_score,
+            a.most_common_adj_score,
+            
+            # Non-Linguistic
+            a.nonlinguistic_features['url_max'],
+            a.nonlinguistic_features['url_mean'],
+            a.nonlinguistic_features['hashtag_max'],
+            a.nonlinguistic_features['hashtag_mean'],
+            a.nonlinguistic_features['user_max'],
+            a.nonlinguistic_features['user_mean'],
+            a.nonlinguistic_features['emoji_mean'],
+            a.nonlinguistic_features['emoji_max'],
+            a.nonlinguistic_features['exclamation_mean'],
+            a.nonlinguistic_features['exclamation_max'],
+            a.nonlinguistic_features['period_mean'],
+            a.nonlinguistic_features['period_max'],
+            a.nonlinguistic_features['question_mean'],
+            a.nonlinguistic_features['question_max'],
+            a.nonlinguistic_features['comma_mean'],
+            a.nonlinguistic_features['comma_max'],
+            a.nonlinguistic_features['allcaps_ratio'],
+            a.nonlinguistic_features['allcaps_inclusion_ratio'],
+            a.nonlinguistic_features['titlecase_ratio'],
+            a.nonlinguistic_features['mean_words'],
+            a.nonlinguistic_features['retweet_percentage'],
 
-			#Named entity recognition
-			authors[author].ents.append([[re.sub(r"USER", "", str(ent.text)), str(ent.label_)] for ent in list(tweet.ents) if str(ent.text) != "USER"])
+            # POS Tags
+            a.POS_counts['ADJ_mean'],
+            a.POS_counts['ADP_mean'],
+            a.POS_counts['ADV_mean'],
+            a.POS_counts['AUX_mean'],
+            a.POS_counts['CONJ_mean'],
+            a.POS_counts['CCONJ_mean'],
+            a.POS_counts['DET_mean'],
+            a.POS_counts['INTJ_mean'],
+            a.POS_counts['NOUN_mean'],
+            a.POS_counts['NUM_mean'],
+            a.POS_counts['PART_mean'],
+            a.POS_counts['PRON_mean'],
+            a.POS_counts['PROPN_mean'],
+            a.POS_counts['PUNCT_mean'],
+            a.POS_counts['SCONJ_mean'],
+            a.POS_counts['SYM_mean'],
+            a.POS_counts['VERB_mean'],
+            a.POS_counts['X_mean'],
+            a.POS_counts['TOKEN_mean'],
 
-			#Collect and save tags
-			tags = []
-			tags.append(token.pos_ for token in tweet if token.text not in ignore)
-			authors[author].POS_tags.append(tags)
+            # https://www.youtube.com/watch?v=DpxDl68brww
+            a.truth
+            ]
 
-			# Collect only the lemma form of the words. Only words with only alpha characters kept.
-			lemmas = []
-			lemmas.append([token.lemma_.lower() for token in tweet if (token.is_alpha and token.text not in ignore)])
-			authors[author].clean.append(" ".join(lemmas[0]))
+    df = pd.DataFrame(table, columns=[
+        "max_similar", 
+        "min_similar", 
+        "mean_similar", 
+        "number_identical", 
+        "mcts_ner",
+        "mcts_adj",
+        'url_max',
+        'url_mean',
+        'hashtag_max',
+        'hashtag_mean',
+        'user_max',
+        'user_mean',
+        'emoji_mean',
+        'emoji_max',
+        'exclamation_mean',
+        'exclamation_max',
+        'period_mean',
+        'period_max',
+        'question_mean',
+        'question_max',
+        'comma_mean',
+        'comma_max',
+        'allcaps_ratio',
+        'allcaps_inclusion_ratio',
+        'titlecase_ratio',
+        'mean_words',
+        'retweet_percentage',
+        'ADJ',
+        'ADP', 
+        'ADV', 
+        'AUX', 
+        'CONJ', 
+        'CCONJ', 
+        'DET', 
+        'INTJ', 
+        'NOUN', 
+        'NUM',
+        'PART',
+        'PRON',
+        'PROPN',
+        'PUNCT',
+        'SCONJ',
+        'SYM',
+        'VERB',
+        'X',
+        'TOKEN',
+        "truth"
+        ])
 
-		data.exportJSON(authors[author])
-	print('Data processed and saved')
-	return(authors)
+    # Enable to export to file
+    if export:
+        go_to_project_root()
+        df.to_csv(filepath+"processed.csv")
 
-if __name__ == '__main__':
-    process_tweets()
-
-# # To compare noun chunking vs named entity recognition.
-# print([chunk.text for chunk in nlp(authors['06ct0t68y1acizh9eow3g5rhancrppr8'].tweets[9]).noun_chunks])
-# print([ent.label_ for ent in nlp(authors['06ct0t68y1acizh9eow3g5rhancrppr8'].tweets[9]).ents])
-
+    return df
