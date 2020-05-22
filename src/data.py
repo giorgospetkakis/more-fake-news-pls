@@ -2,6 +2,7 @@
 ## Sara, Flora, Giorgos
 
 import jsonpickle
+import pandas
 from bs4 import BeautifulSoup
 from os import listdir
 from os.path import isfile, join
@@ -9,6 +10,7 @@ from utils import go_to_project_root
 
 RAW_DATA_PATH = "data/raw/"
 PREPROCESSED_DATA_PATH = "data/interim/json/"
+CSV_DATA_PATH = "data/processed/processed.csv"
 
 class Author:
     '''
@@ -170,16 +172,6 @@ def __parse_tweets__(filepath):
     tweets = soup.find_all('document')
     return [t.get_text() for t in tweets]
 
-def convert_to_JSON(author):
-    '''
-    Converts a given author to its JSON equivalent.
-
-    Parameters:
-        author(Author):
-            The author to be converted
-    '''
-    return jsonpickle.encode(author)
-
 def get_raw_data(lang='en'):
     '''
     Returns the raw data in the selected language.
@@ -222,6 +214,23 @@ def get_processed_data(lang='en'):
         authors[file.split(".")[0]] = jsonpickle.decode(lines, classes=Author)
 
     return authors
+
+def get_csv():
+    '''
+    Returns the processed csv data file from the default path
+    '''
+    go_to_project_root()
+    return pandas.read_csv(CSV_DATA_PATH, index_col=0)
+
+def convert_to_JSON(author):
+    '''
+    Converts a given author to its JSON equivalent.
+
+    Parameters:
+        author(Author):
+            The author to be converted
+    '''
+    return jsonpickle.encode(author)
 
 def exportJSON(author):
     '''
