@@ -291,7 +291,7 @@ def extract_fake_news_mcts(authors, n_models=50, k=3, threshold=1.0, _max_iter=5
         if max_purity >= threshold:
             list_of_sets += [set()]
             if len(list_of_sets) % (n_models / 4) == 0 and len(list_of_sets) > 0:
-                print(f"{len(list_of_sets) / (n_models)}% of requested models trained")
+                print(f"{len(list_of_sets) / (n_models) * 100}% of requested models trained")
             for ind in order_centroids[pure_cluster,:100]:
                 # Add it to the list of sets
                 list_of_sets[-1].add(terms[ind])
@@ -308,7 +308,7 @@ def extract_fake_news_mcts(authors, n_models=50, k=3, threshold=1.0, _max_iter=5
 
         # Count the number of terms in each author
         for term in list(final_set):
-            count += cleaned.count(term)
+            count += cleaned.count(re.sub("_", " ", term))
 
         # Save to author
         authors[author].most_common_ner_score = count
