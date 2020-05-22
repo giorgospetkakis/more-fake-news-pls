@@ -115,7 +115,6 @@ class Author:
 
         for tag in tag_list:
             self.POS_counts['{}_mean'.format(tag)] = None
-            #self.POS_counts['{}_max'.format(tag)] = None
 
         self.nonlinguistic_features = { 'url_max' : None,
                                         'url_mean' : None,

@@ -315,7 +315,6 @@ def extract_fake_news_mcts(authors, n_models=50, k=3, threshold=1.0, _max_iter=5
 
     return authors, final_set
 
-
 def extract_nonlinguistic_features(authors):
 	'''
 	Extract the features stored in the nonlinguistic_features dict attribute on the author class.
