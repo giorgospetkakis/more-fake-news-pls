@@ -64,7 +64,15 @@ def extract_semantic_similarity(authors, model=None):
 		authors[author].max_similar = a[ a != 1].max()
 		authors[author].min_similar = a[ a != -1].min()
 		authors[author].mean_similar = a[ a != -1].mean()
-		authors[author].number_identical = len(np.where(a ==1.0)[0])
+
+		#Updated as previous calculation was incorrect.
+		identicals = []
+	    for i in range(len(authors[author].tweets)):
+	        if np.where(authors[author].similarities[i] == 1.0)[0].shape[0] > 0:
+	            identicals.append(i)
+	            identicals.extend(list(np.where(authors[author].similarities[i] == 1.0)[0]))
+	    authors[author].number_identical = len(set(identicals))
+
 		print('|',end=' ')
 
 	print("")
