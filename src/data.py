@@ -2,6 +2,7 @@
 ## Sara, Flora, Giorgos
 
 import jsonpickle
+import numpy as np
 import pandas
 from bs4 import BeautifulSoup
 from os import listdir
@@ -57,6 +58,9 @@ class Author:
 
             The first coordinate of the list refers to the tweet of the author
             The nested list contains a sequence (separated by spaces) of the lemmas of the words. 
+
+        nosw(list):
+            A version of the tweets without the stopwords, split into a list.
         
         similarities(np array):
             Contains an array of the similarity measure (between 0 and 1) of two tweets indexed on the two axes.
@@ -110,6 +114,7 @@ class Author:
         self.POS_tags = []
         self.tokens = []
         self.clean = []
+        self.nosw = []
         self.similarities = None
         self.max_similar = None
         self.min_similar = None
@@ -244,7 +249,8 @@ def get_prepared_data(split=0.667, norm=True, pca=None):
     table = df.to_numpy()
 
     # Split X and Y
-    X = table[:,:-1]
+    _ids = table[:,0].reshape(300,1)
+    X = table[:,1:-1]
     y = table[:,-1]
 
     # Normalize
@@ -256,6 +262,7 @@ def get_prepared_data(split=0.667, norm=True, pca=None):
     if pca:
         X = PCA(n_components=pca).fit_transform(X)
 
+    X = np.hstack((_ids, X))
     _s = int(X.shape[0] * split)
     xtrain = X[_s:]
     ytrain = y[_s:]
