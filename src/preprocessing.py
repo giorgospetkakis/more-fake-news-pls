@@ -22,10 +22,13 @@ def convert_to_df(authors, export=False):
     '''
     # Can't not hard-code this
     # Create table, fill table, convert to dataframe, name columns, return
-    table = np.zeros((len(list(authors.values())), 47))
+    table = np.hstack((np.zeros((len(list(authors.values())), 1)).astype('str'), np.zeros((len(list(authors.values())), 47))))
 
     for i, a in enumerate(list(authors.values())):
         table[i] = [
+            # id
+            a.author_id,
+
             # Semantic Similarity
             a.max_similar, 
             a.min_similar, 
@@ -85,6 +88,7 @@ def convert_to_df(authors, export=False):
             ]
 
     df = pd.DataFrame(table, columns=[
+        "author_id",
         "max_similar", 
         "min_similar", 
         "mean_similar", 
