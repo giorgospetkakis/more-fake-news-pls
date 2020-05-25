@@ -1,0 +1,34 @@
+WHAT NEW FEATURES SHOULD WE LOOK INTO?
+- Lexical Diversity (proportion of words in set that only appears once) --> Hapax. Type-token.
+- Vocabulary length
+- Average word length (in syllables?) --> textstat (see scores)
+- NRC Emotion Lexicon
+- NLTK sentiment analysis (perhaps expand contractions first)
+- LIWCvectorizer (to get emotion, analysis, psych, power, dom status)
+- Spellchecker to count spelling mistakes
+- Absolute terms?
+- Add "Via" found for social media tags
+- Nltk sentiment intensity
+- Correlation btwn named entities & adjectivis (Giorgos idea before class)
+- Doc2Vec of each tweet to get 20/128 dimension vecto
+
+WHAT FEATURES SHOULD WE REMOVE FROM THE TEST?
+- Similarity table
+https://towardsdatascience.com/feature-elimination-using-svm-weights-c287c16a5151
+Use Sklearn function to see feature importance?
+
+WHAT CONSIDERATIONS SHOULD WE MAKE?
+- TF-idf only on training dataset. See if our accuracy changes --> do we max it?
+- Consider how we may normalize all our features?
+- Data augmentation: Back translation (with Spanish tweets for example? Or convert English tweets to Danish and back?). Replace words with synonyms. Shuffle tweets btwn authors. Tweet generation.
+- Twitter-trained POS tagger
+- Switched to startified k-fold
+
+MODELS TO TRY
+- Gradient Boosting
+- Split authors into their tweets. Feed in each tweet one by one to LSTM and final output --> classification.
+- Random Forest w 500 classifiers
+
+WHAT TO DISCUSS MORE:
+-Twitter DNA: Twitter DNA: for each tweet, count everytime it is in some set. And sum.of the cases to get some DNA change. I do not understand. Transform DNA into bag of words. --> TweetDNA vectorizer
+

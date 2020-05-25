@@ -1,33 +1,105 @@
-Correlation btwn named entities & adjectivis
 
 boy pablo losing you
 
 GET WRONG:
-ap52gs0xsrckqp5ot84z4qeqx133uu39
-ae90k3wgo50si8sd1r5q99uxtnkvpdpi
-agj1zc5wxirn0885t1cj5gsnhitoacky
-ae4d8z4xa1zpaex8je25anuz7k3vavzc
-e9zdi89gp7vwfazymtxpngr8u5drtjzw
-z5ph5cupbgi6fqg4oxrkqkpbazwad4zy
-hc1khhq70dp6f4d05ul5ln95ucjem8n5
-ltl8gf0qeokew9j5fjouzjgj1iggwcqk
-zo3dy2tmqdzyowk6d0amswrlsr4ze1pn
-2if1gnjcokhd3xf5ohbj0nnunw3puxvf
-5ud94940mcd80sdw4ew16qxxmwdwmm1y
-os3r35ujbthdlbyjp815how8w1k3lp48
-fsrnc43crfcw20q5jv6rl620qluckgjx
-8l2kwf77tt7yyhd6ggu4n3diyhditcyg
-ohcq9l9avafjhna9lxw10b1v3898ew7a
-v5dg3o7vfktpny3cuapf83hhn1xs9860
-gcqzgv3cp8dnm31ys5uy2b8pifq2hhay
-o4wkq0eenu9ulwe6st0tqmtyydghw11w
-txx1g7ne2p633i81z15w7lqz8p858pil
-hvdrhgkik7svztwi5h151fj3023nuwx2
-xn1ntk5orulu90oq0vzp1xmhyy9tfno3
-lmnbxs1oysglzpf0rnllmdlgjkk4n3l2
-fu81uabcsmugx31pazzbqkx9uquc73p6
-tbq8amnpqaruwlk4k59y24o88v2lrijv
-q4om4iaf2uvwyvjzifd6kcvuul5xm8a4
-4so0t8vnmfcyw840z1mswu2td18cfjbr
-t72vej72nk7lc5tbfo59icweo0c94no7
-2sqhe8tt1jeoblqs3n6uo0ztvzeika0e
+jnxjj86slokqd3qxz4t0xd1sbh0pnk1g
+mtksp40840d55e7vqpq840bb8st06g9d
+ynms1hvhmzagkbx86y4wp6nocxx1ktf2
+vt5k7cjw6isdablqhgi2a0n3i6yo4b2h
+11d9lz40vkh06i6tp2mubr1qbohm8biv
+dgm54nxhyr9cextksr1tnflxu416sama
+qn8vtu7k2x50izwd6wx174gfj3gwmmnv
+2fs670xfe9yw8ydstcxicvsqzrdaa87b
+4whbe0y9fno5nfmxnqzwwydx5oqqy3py
+epebfko9ccwvfzblh4jkeuo6m89ruv96
+yx4q3zokksf3a3g3oapn055p1dnf0a91
+jp4ome1kafz9wl7j046j24mtn1y7br6z
+jztc6t415ocxtnioyvgzddv49j3pcus4
+ns1f9qfr328rgouh298x47g25bet33it
+5rh7fov0yf6vnayzixjck46q4edm2xma
+sar6hff7d0nogdywvb0vkzivwir7cf3x
+ogecvmquvmgwazab0osmth2eaieiejsv
+ufhkj6o7xh0azv4izmvc1gqau89r2yea
+g7ct4chwle39i3ulhy8f9eqy0l4sfbkg
+w73115nc8smn0t3xr1ojqp6dqpb1tq35
+xpmlqatcyx250189qrc2vfbx0bg0p8fi
+ozlchq4ao96rke4n2xbz9hxo8ogd1unu
+t6tbqb9o35p43lurms1gvwajkx28yni9
+v5lghqolgdvl1b2w9upffzv8g5ge5gbp
+6d3syqencbejb4dzscqhbon4bn4t4fkc
+5hmfbulj8wbmeu51d8k62shniptu9zw3
+ceojvjjthre8av5nkgmw7ei4sdcwmc20
+cdaj65qctw066ou7x4pn9hc6tjcmeme9
+
+GET RIGHT:
+'06ct0t68y1acizh9eow3g5rhancrppr8',
+ '071nxc49ihpd0jlfmvn2lghtayy3b5n9',
+ '0s308xu8rhhuqlj0jbh49z0kdx5sr2b9',
+ '14ka43f4ho6puh4iyhrfzsbrdpy5yixi',
+ '18n59cv9zps9sm601zu95z680wma6cvw',
+ '1jjc4qfpeeffirv6pnq9aulrlk2fgl3k',
+ '1lvdfttfby38rwxqafl7muadiy7mfft5',
+ '1nmrlqpzwa5z7pd36zy28qug14gue00t',
+ '1s9ak9epkejejdgy99kuix4gqbxpjrf3',
+ '20jdn2f6l8qd73yj6y2kppbc798xstql',
+ '2m385le0s10tvxfizbktm4sjj7xh506i',
+ '2prnfocp00m0orj3ewj9ax9upu7qo4or',
+ '36w54uf2991wiao1halknad31ezvotiz',
+ '3km44k1va2y4knrz6dlkf2u4kym34y0h',
+ '3rczjyykiaxqpbeabthht21732hxm0d3',
+ '3x6f8m8j6hh19vqb67bhq9bbs4goyf1j',
+ '48k5r0j4btqu8rdoq6s16ejkt01onafb',
+ '4h7ugot0byxla1yk0nf9kg9nxyf1hlli',
+ '4i1i9kgfahbizuk4rlrrqlh5tppd34zt',
+ '5uoku9g7ox972ybb4axiiwn16717firm',
+ '5we816p2ml0mujwg2ha1vicr0p2qtoo3',
+ '640i8g1cpqz1r4jy4lshpau35v54vycx',
+ '6rbqri4fyu77yr9yxtc3r5x7hti49u53',
+ '7j62tqfxjoaz5byk643ctgenbfjuu99h',
+ '98as6suith8cskycmudejdvhvmiwi1iy',
+ '9i4x0l6lzayvpooc4ybugncxxd58dvee',
+ '9kzwdxn6vp514xe06efyb26qdnidt3m1',
+ '9ybweq2c9bw3whelacik3uxbnba9yj1i',
+ 'a2is3y4a06exppvypo27imxbo2bt0nc8',
+ 'aidphjbj9c6qakq6j5m1nfbmmiy73f9k',
+ 'c2afzs5zoty5d6x06k1m8781j3ie1yah',
+ 'cdoehmckcuu2phkj0g84odpu4kj9f230',
+ 'cdpexkrbjob7puu8ahw2xj6lt8umj49v',
+ 'cz3s8ini8iyrb8uz8x4a32z8bnsmvol5',
+ 'd8y3v2kh07gdtlym8k8yjorulc6gua92',
+ 'dh252lx7psysxa7uqz2kacizqlfsxqhy',
+ 'dnmht6eebqauwh4w6akiy9q1zb0ebl0g',
+ 'e19lbjlbcx9q8785rhh8jy3gobpr30bf',
+ 'e3efkh8l3ivtx83ivemenaoicedue5wj',
+ 'ez3g95xseydrfqnee23e41cdo9jldfis',
+ 'f4zgi7ym7829iqld6x77q6mh30s0rf86',
+ 'ffw4du7oj59dgi5cobxa4exkvgj5l40y',
+ 'fjtva8jxymk5z3b6rpw65hkdt0f8j5bn',
+ 'gemo5q5llsk44vezvt3rztv0yyfgjaxf',
+ 'gnubge5he0scnti43c95ylppja5hyu3e',
+ 'h56srndge9i25ksdtajjfgsm10e59kgb',
+ 'iqx2tqavqtpmh1kdn5wnt2wvlvt4me97',
+ 'j6eo0r4csyzmbvtv0ty9cfhaujdknb0j',
+ 'jcn5hwgaeatzjmjww98ejl6o4omh5n7o',
+ 'l2a64i3p35nquw35cxneilk4i1an161t',
+ 'l7o357ot2banopizg7vid5tbso9h4y3m',
+ 'lavu4pc9zwshidetx4yof9p7g614gv7g',
+ 'ljz94z7vs4bm5wawq4141xm6ieonio8o',
+ 'n3l9sc6sinb2up1qxytkppkaq2cu4hd0',
+ 'nd9t6ta0k01m71dhg7z1i4zbl07iomw7',
+ 'ndqzmihoau9uu9nfm0gkbids9yqu49at',
+ 'nrajkdsw3k66fs6xmrcrg5cx59wh6431',
+ 'oh97ndodfecyygydoh15xtcehksgre9w',
+ 'orv973hw22cy626ws0xtviju1x0tjl5b',
+ 'q91ww3hmw5lof951ts61p3mu52oxrl3o',
+ 'snilxp4fgzi281ayieikiwle0xkb1uok',
+ 'stw8sqc4x8jd0fyvhefwktlbhfuhb0nv',
+ 'texx4na58bvzj89l8j19lrsf3e6jxkkw',
+ 'ur6ur61c96tkp8r4v5og5wo9r32ctlcc',
+ 'vicffjlhtet4thithalfjj8ngcarykw8',
+ 'x9s7evgt3nbpi9qsa4h1y4gn7rdg26op',
+ 'xsj9qawvj045o9rb75a94us7ig94sm65',
+ 'ye2iekzvkven8ztwqlili7eh13jvltoz',
+ 'z9sjtv730uwrqxjtr4gc6l9w0j1oczgq',
+ 'zurv8xodgwcle1guhjai6n1i4cw4lc8r',
+ 'zwfesexkazacsz78p8g1h6ockrcvoypf'
