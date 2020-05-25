@@ -282,7 +282,7 @@ def convert_to_JSON(author):
     '''
     return jsonpickle.encode(author)
 
-def exportJSON(author):
+def exportJSON(author, path=""):
     '''
     Exports an author object to a JSON file
     Parameters: 
@@ -290,7 +290,8 @@ def exportJSON(author):
             The author to be serialized
     Export: None
     '''
-    path = PREPROCESSED_DATA_PATH
+    if path == "":
+        path = PREPROCESSED_DATA_PATH
     with open(f"{path}{author.author_id}.json", "w") as file:
         file.writelines(convert_to_JSON(author))
         file.close()
