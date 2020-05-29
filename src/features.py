@@ -323,7 +323,7 @@ def extract_mcts_ner(authors, n_models=50, k=3, threshold=1.0, _max_iter=5000, _
             count += cleaned.count(re.sub("_", " ", term))
 
         # Save to author
-        authors[author].most_common_ner_score = count
+        authors[author].most_common_ner_score = count / len(authors[author].tweets) # Weighted
 
     return authors, final_set
 
@@ -442,7 +442,7 @@ def extract_mcts_adj(authors, n_models=50, k=3, threshold=1.0, _max_iter=5000, _
             count += cleaned.count(re.sub("_", " ", term))
 
         # Save to author
-        authors[author].most_common_adj_score = count
+        authors[author].most_common_adj_score = count / len(authors[author].tweets) # Weighted
 
     return authors, final_set
 
