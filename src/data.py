@@ -132,6 +132,7 @@ class Author:
         self.most_common_adj_score = None
         self.adjectives = {}
         self.POS_counts = {}
+        self.emotion = {}
         tag_list = ['ADJ' ,'ADP', 'ADV', 'AUX' , 'CONJ' , 'CCONJ' , 'DET' , 'INTJ' , 'NOUN' , 'NUM' , 'PART' , 'PRON' , 'PROPN' , 'PUNCT' , 'SCONJ' , 'SYM' , 'VERB' ,'X' , 'TOKEN']
 
         for tag in tag_list:
