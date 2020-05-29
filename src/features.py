@@ -588,38 +588,38 @@ def extract_lexical_features(Authors):
 
     return Authors
 
-def get_emotion_features(authors):
-	word_lexicon = pd.read_csv('data/external/NRC_EmoWord.txt')
-		#word_lexicon["aback"], word_lexicon["anger"],word_lexicon["0"] = word_lexicon["aback anger 0"].str.split("\\t", n = 2, expand = True) 
+def extract_emotion_features(authors):
+    word_lexicon = pd.read_csv('data/external/NRC_EmoWord.txt')
+        #word_lexicon["aback"], word_lexicon["anger"],word_lexicon["0"] = word_lexicon["aback anger 0"].str.split("\\t", n = 2, expand = True) 
 
-	# new data frame with split value columns 
-	new = word_lexicon["aback	anger	0"].str.split("\\t", n = 2, expand = True) 
-	  
-	# making separate first name column from new data frame 
-	word_lexicon["Word"]= new[0] 
-	  
-	# making separate last name column from new data frame 
-	word_lexicon["Emotion"]= new[1] 
+    # new data frame with split value columns 
+    new = word_lexicon["aback	anger	0"].str.split("\\t", n = 2, expand = True) 
+        
+    # making separate first name column from new data frame 
+    word_lexicon["Word"]= new[0] 
+        
+    # making separate last name column from new data frame 
+    word_lexicon["Emotion"]= new[1] 
 
-	word_lexicon["Value"]= new[2] 
-	  
-	# Dropping old Name columns 
-	word_lexicon.drop(columns =["aback	anger	0"], inplace = True) 
-
-
-	numpy_lexicon = word_lexicon.to_numpy()
+    word_lexicon["Value"]= new[2] 
+        
+    # Dropping old Name columns 
+    word_lexicon.drop(columns =["aback	anger	0"], inplace = True) 
 
 
-	shorter_lexicon = np.delete(numpy_lexicon, np.where(numpy_lexicon == '0'), axis = 0)
-	#short_lex = numpy_lexicon[np.all(numpy_lexicon != 0, axis=1)]
+    numpy_lexicon = word_lexicon.to_numpy()
 
-	emotion_dict = {}
 
-	for i, row in enumerate(shorter_lexicon):
-	    if row[0] not in emotion_dict.keys():
-	        emotion_dict[row[0]] = [f"{row[1]}"]
-	    else:
-	        emotion_dict[row[0]] += [f"{row[1]}"]
+    shorter_lexicon = np.delete(numpy_lexicon, np.where(numpy_lexicon == '0'), axis = 0)
+    #short_lex = numpy_lexicon[np.all(numpy_lexicon != 0, axis=1)]
+
+    emotion_dict = {}
+
+    for i, row in enumerate(shorter_lexicon):
+        if row[0] not in emotion_dict.keys():
+            emotion_dict[row[0]] = [f"{row[1]}"]
+        else:
+            emotion_dict[row[0]] += [f"{row[1]}"]
     for author in authors.keys():
         auth_dict = {"anger": 0, "fear": 0, "anticipation": 0, "trust": 0, "surprise": 0, "sadness": 0, "joy": 0,
                  "disgust": 0, "positive": 0, "negative": 0}
@@ -632,6 +632,6 @@ def get_emotion_features(authors):
                     tags = emotion_dict[token]
                     for i in tags:
                         val = auth_dict[i]
-                        auth_dict[i] = val + 1
+                        auth_dict[i] = val + (1 / len(tweets))
         authors[author].emotion = auth_dict
     return authors
