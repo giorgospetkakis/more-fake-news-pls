@@ -171,13 +171,14 @@ def __get_truth_vals__(directory):
             break
     return truth_dict
 
-def __import_from__(directory):
+def __import_from__(directory, ids):
     file_list = [f for f in listdir(directory) if isfile(join(directory, f)) and f.split(".")[-1] == "xml"]
     truth_vals = __get_truth_vals__(directory)
     author_dict = {}
     for file in file_list:
         author_id = file.split(".")[0]
-        author_dict[author_id] = Author(author_id, __parse_tweets__(join(directory, file)), truth_vals[author_id])
+        if author_id in ids:
+            author_dict[author_id] = Author(author_id, __parse_tweets__(join(directory, file)), truth_vals[author_id])
     return author_dict
 
 def __parse_tweets__(filepath):
@@ -187,7 +188,7 @@ def __parse_tweets__(filepath):
     tweets = soup.find_all('document')
     return [t.get_text() for t in tweets]
 
-def get_raw_data(lang='en'):
+def get_raw_data(ids, lang='en'):
     '''
     Returns the raw data in the selected language.
     Default is English
@@ -202,7 +203,7 @@ def get_raw_data(lang='en'):
             A dictionary containing all the raw author information in the selected language.
     '''
     go_to_project_root()
-    return __import_from__(RAW_DATA_PATH + lang)
+    return __import_from__(RAW_DATA_PATH + lang, ids)
 
 def get_processed_data(lang='en'):
     '''

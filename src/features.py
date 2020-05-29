@@ -74,7 +74,7 @@ def extract_semantic_similarity(authors, model=None):
 			if np.where(authors[author].similarities[i] == 1.0)[0].shape[0] > 0:
 				identicals.append(i)
 				identicals.extend(list(np.where(authors[author].similarities[i] == 1.0)[0]))
-		authors[author].number_identical = len(set(identicals))
+		authors[author].number_identical = len(set(identicals))/len(authors[author].tweets)
 		print('|',end=' ')
 
 	print("")
