@@ -580,7 +580,7 @@ def extract_lexical_features(Authors):
     for author in Authors.keys():
         Authors[author].readability = 0
         for tweet in Authors[author].tweets:
-        	Authors[author].readability += (textstat.text_standard(tweet, float_output=True)/len(Authors[author].tweets))
+        	Authors[author].readability += (textstat.text_standard(tweet, float_output=True)/len(Authors[author].tweets)) # i am angery at textstat
     
     # On lemmatized text, get the TTR to determine the lexical diversity
     for author in Authors.keys():
