@@ -8,6 +8,9 @@ import spacy
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.feature_extraction.text import TfidfVectorizer
+import textstat
+from lexical_diversity import lex_div as ld
+import preprocessing
 
 def __clean_tweets__(tweets, pattern=None, clean_USER=False):
 	pattern = r"HASHTAG|URL|RT|#|https:\/\/t\.\\[a-z\d]+|https.*$|\&*amp"
@@ -67,12 +70,11 @@ def extract_semantic_similarity(authors, model=None):
 
 		#Updated as previous calculation was incorrect.
 		identicals = []
-	    for i in range(len(authors[author].tweets)):
-	        if np.where(authors[author].similarities[i] == 1.0)[0].shape[0] > 0:
-	            identicals.append(i)
-	            identicals.extend(list(np.where(authors[author].similarities[i] == 1.0)[0]))
-	    authors[author].number_identical = len(set(identicals))
-
+		for i in range(len(authors[author].tweets)):
+			if np.where(authors[author].similarities[i] == 1.0)[0].shape[0] > 0:
+				identicals.append(i)
+				identicals.extend(list(np.where(authors[author].similarities[i] == 1.0)[0]))
+		authors[author].number_identical = len(set(identicals))
 		print('|',end=' ')
 
 	print("")
@@ -570,3 +572,22 @@ def extract_POS_features(authors):
 		authors[author].POS_counts.pop('SPACE_mean')
 		print("|",end='')
 	return authors
+
+def extract_lexical_features(Authors):
+    # On raw text, get average grade level of the tweets
+    for author in Authors.keys():
+        Authors[author].readability = 0
+        for tweet in Authors[author].tweets:
+        	Authors[author].readability += (textstat.text_standard(tweet, float_output=True)/len(Authors[author].tweets))
+    
+    # On lemmatized text, get the TTR to determine the lexical diversity
+    for author in Authors.keys():
+        Authors[author].TTR = ld.ttr(Authors[author].clean)
+
+    return Authors
+
+print("Collecting Author data")
+Authors = data.get_processed_data()
+
+print("Saving to CSV")
+preprocessing.convert_to_df(Authors, export=True)

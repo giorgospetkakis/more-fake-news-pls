@@ -22,12 +22,16 @@ def convert_to_df(authors, export=False):
     '''
     # Can't not hard-code this
     # Create table, fill table, convert to dataframe, name columns, return
-    table = np.hstack((np.zeros((len(list(authors.values())), 1)).astype('str'), np.zeros((len(list(authors.values())), 47))))
+    table = np.hstack((np.zeros((len(list(authors.values())), 1)).astype('str'), np.zeros((len(list(authors.values())), 49))))
 
     for i, a in enumerate(list(authors.values())):
         table[i] = [
             # id
             a.author_id,
+
+            # Lexical features
+            a.readability,
+            a.TTR,
 
             # Semantic Similarity
             a.max_similar, 
@@ -85,10 +89,13 @@ def convert_to_df(authors, export=False):
 
             # https://www.youtube.com/watch?v=DpxDl68brww
             a.truth
+
             ]
 
     df = pd.DataFrame(table, columns=[
         "author_id",
+        "readability",
+        "TTR",
         "max_similar", 
         "min_similar", 
         "mean_similar", 

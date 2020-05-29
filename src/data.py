@@ -67,6 +67,12 @@ class Author:
             Half an array (values are not repeated). Empty values are filled in as -1.
             Saved for now, but perhaps would be wise to conserve only what we need?
 
+        readability(np float64):
+            The average readability of the user's tweets (in grade level, as determined by textstat)
+
+        TTR(np float64):
+            The type-token ratio of the user's full set of tweets.
+
         max_similar(np float64):
             The value of similarity between the user's most similar tweets. 
 
@@ -116,6 +122,8 @@ class Author:
         self.clean = []
         self.nosw = []
         self.similarities = None
+        self.readability = None
+        self.TTR = None
         self.max_similar = None
         self.min_similar = None
         self.mean_similar = None
