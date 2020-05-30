@@ -22,7 +22,7 @@ def convert_to_df(authors, export=False):
     '''
     # Can't not hard-code this
     # Create table, fill table, convert to dataframe, name columns, return
-    table = np.hstack((np.zeros((len(list(authors.values())), 1)).astype('str'), np.zeros((len(list(authors.values())), 49))))
+    table = np.hstack((np.zeros((len(list(authors.values())), 1)).astype('str'), np.zeros((len(list(authors.values())), 58))))
 
     for i, a in enumerate(list(authors.values())):
         table[i] = [
@@ -85,7 +85,18 @@ def convert_to_df(authors, export=False):
             a.POS_counts['SYM_mean'],
             a.POS_counts['VERB_mean'],
             a.POS_counts['X_mean'],
-            a.POS_counts['TOKEN_mean'],
+
+            # EMOTION
+            a.emotion["anger"],
+            a.emotion["fear"],
+            a.emotion["anticipation"],
+            a.emotion["trust"],
+            a.emotion["surprise"],
+            a.emotion["sadness"],
+            a.emotion["joy"],
+            a.emotion["disgust"],
+            a.emotion["positive"],
+            a.emotion["negative"],
 
             # https://www.youtube.com/watch?v=DpxDl68brww
             a.truth
@@ -141,7 +152,16 @@ def convert_to_df(authors, export=False):
         'SYM',
         'VERB',
         'X',
-        'TOKEN',
+        "anger" ,
+        "fear" ,
+        "anticipation" ,
+        "trust" ,
+        "surprise" ,
+        "sadness" ,
+        "joy",
+        "disgust",
+        "positive",
+        "negative",
         "truth"
         ])
 
