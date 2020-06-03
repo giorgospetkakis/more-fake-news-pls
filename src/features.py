@@ -199,7 +199,7 @@ def extract_clean_tweets(authors, model=None, ignore=["HASHTAG", "URL"]):
 	print('Done')
 	return(authors)
 
-def extract_mcts_ner(authors, n_models=50, k=3, threshold=1.0, _max_iter=5000, _n_init=5, data_split=0.6667):
+def extract_mcts_ner(authors, n_models=50, k=3, threshold=1.0, _max_iter=5000, _n_init=5, data_split=0.6667, c=-1):
     '''
     Extract the most common terms used by fake-news spreaders for the given authors.
     Trains an n_models number of models and takes the intersection of the most common terms used by fake news spreaders.
@@ -229,6 +229,18 @@ def extract_mcts_ner(authors, n_models=50, k=3, threshold=1.0, _max_iter=5000, _
             The splitting point between the testing set and training set for the data.
             Default is 60%
     '''
+    if type(c) == list:
+        for author in authors.keys():
+            # Get cleaned values
+            cleaned = " ".join(authors[author].clean)
+            count = 0
+
+            # Count the number of terms in each author
+            for term in list(c):
+                count += cleaned.count(re.sub("_", " ", term))
+
+            authors[author].most_common_adj_score = count / len(authors[author].tweets)
+        return authors
 
     print("Loading data...")
 
@@ -327,7 +339,7 @@ def extract_mcts_ner(authors, n_models=50, k=3, threshold=1.0, _max_iter=5000, _
 
     return authors, final_set
 
-def extract_mcts_adj(authors, n_models=50, k=3, threshold=1.0, _max_iter=5000, _n_init=5, data_split=0.6667):
+def extract_mcts_adj(authors, n_models=50, k=3, threshold=1.0, _max_iter=5000, _n_init=5, data_split=0.6667, c=-1):
     '''
     Extract the most common terms used by fake-news spreaders for the given authors.
     Trains an n_models number of models and takes the intersection of the most common terms used by fake news spreaders.
@@ -357,6 +369,18 @@ def extract_mcts_adj(authors, n_models=50, k=3, threshold=1.0, _max_iter=5000, _
             The splitting point between the testing set and training set for the data.
             Default is 60%
     '''
+    if type(c) == list:
+        for author in authors.keys():
+            # Get cleaned values
+            cleaned = " ".join(authors[author].clean)
+            count = 0
+
+            # Count the number of terms in each author
+            for term in list(c):
+                count += cleaned.count(re.sub("_", " ", term))
+
+            authors[author].most_common_adj_score = count / len(authors[author].tweets)
+        return authors
 
     print("Loading data...")
 
