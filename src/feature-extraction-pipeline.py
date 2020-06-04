@@ -10,8 +10,13 @@ import pandas as pd
 import numpy as np
 from utils import go_to_project_root
 import spacy
+import string
 
 nlp = spacy.load("en_core_web_md")
+
+def randomString(stringLength=32):
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(stringLength))
 
 def train_time_augmentation(ids):
     all_authors = data.get_raw_data()
@@ -37,20 +42,20 @@ def train_time_augmentation(ids):
             tweets_1 += [tweet]
     random.shuffle(tweets_1)
 
+    augs = {}
     for author in zeros:
-        authors[author.author_id].tweets = []
+        _id = randomString()
+        augs[_id] = data.Author(_id, [], 0)
         for i in range(100):
-            authors[author.author_id].tweets += [tweets_0.pop(0)]
+            augs[_id].tweets += [tweets_0.pop(0)]
 
     for author in ones:
-        authors[author.author_id].tweets = []
+        _id = randomString()
+        augs[_id] = data.Author(_id, [], 1)
         for i in range(100):
-            authors[author.author_id].tweets += [tweets_1.pop(0)]
-
-    for i, author in enumerate(authors.keys()):
-        authors[author].author_id = f"shuffled-{i + 1}"
+            augs[_id].tweets += [tweets_1.pop(0)]
         
-    return authors
+    return augs
 
 
 def test_time_augmentation(TestAuthor, n=3):
