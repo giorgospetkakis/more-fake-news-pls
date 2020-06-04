@@ -65,8 +65,8 @@ def test_time_augmentation(TestAuthor, n=3):
         Sub_Authors[i] = data.Author(TestAuthor.author_id, TestAuthor.tweets[:50], TestAuthor.truth)
         
     _ret = {}
-    for a in Sub_Authors:
-        _ret[a.author_id] = a
+    for i, a in enumerate(Sub_Authors):
+        _ret[a.author_id + f"_sub{i+1}"] = a
     return _ret
 
 # First we take a .csv file with the author IDs and their truth values
@@ -222,7 +222,7 @@ for train_index, test_index in kf.split(X,y):
         test_df = test_df.drop('author_id', axis=1).to_numpy()
         X_test = test_df[:,:-1]
         
-        THIS_PIPELINE_PATH = THIS_PIPELINE_PATH + "X_test/"
+        THIS_PIPELINE_PATH = PIPELINE_PATH + "X_test/"
 
         if not os.path.exists(THIS_PIPELINE_PATH):
             os.makedirs(THIS_PIPELINE_PATH)
@@ -237,5 +237,3 @@ for train_index, test_index in kf.split(X,y):
     print()
     print()
     k += 1
-    
-
