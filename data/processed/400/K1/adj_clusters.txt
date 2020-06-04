@@ -1,0 +1,10 @@
+american
+true
+new
+high
+real
+old
+dead
+great
+big
+black

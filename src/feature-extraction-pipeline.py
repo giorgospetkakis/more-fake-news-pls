@@ -84,7 +84,7 @@ df = pd.read_csv("data/IDs_names.csv").to_numpy()
 X = df[:,0]
 y = df[:,1].astype(int)
 
-PIPELINE_PATH = "data/processed/"
+PIPELINE_PATH = "data/processed/1200/"
 
 kf = StratifiedKFold(n_splits=3,shuffle=True,random_state=69)
 
@@ -103,39 +103,41 @@ for train_index, test_index in kf.split(X,y):
     y_train = y[train_index]
     
     print("Augmenting training data.")
+
+    for i in range(5):
     
-    # Augment training data. Then extract the features for it
-    augmentations = train_time_augmentation(X[train_index])
-    
-    # # First extract the nonlinguistic features
-    augmentations = features.extract_nonlinguistic_features(augmentations)
+        # Augment training data. Then extract the features for it
+        augmentations = train_time_augmentation(X[train_index])
+        
+        # # First extract the nonlinguistic features
+        augmentations = features.extract_nonlinguistic_features(augmentations)
 
-    # # Extract semantic similarity
-    augmentations = features.extract_semantic_similarity(augmentations, model=nlp)
+        # # Extract semantic similarity
+        augmentations = features.extract_semantic_similarity(augmentations, model=nlp)
 
-    # # Get the lemmas
-    augmentations = features.extract_clean_tweets(augmentations, model=nlp)
+        # # Get the lemmas
+        augmentations = features.extract_clean_tweets(augmentations, model=nlp)
 
-    # # Lexical features -- TTR requires lemmas
-    augmentations = features.extract_lexical_features(augmentations)
+        # # Lexical features -- TTR requires lemmas
+        augmentations = features.extract_lexical_features(augmentations)
 
-    # # Get Named Entities
-    augmentations = features.extract_named_entities(augmentations, model=nlp)
+        # # Get Named Entities
+        augmentations = features.extract_named_entities(augmentations, model=nlp)
 
-    # # Get POS tags
-    augmentations = features.extract_pos_tags(augmentations, model=nlp)
+        # # Get POS tags
+        augmentations = features.extract_pos_tags(augmentations, model=nlp)
 
-    # # Count POSes and get adjectives
-    augmentations = features.extract_POS_features(augmentations, model=nlp)
+        # # Count POSes and get adjectives
+        augmentations = features.extract_POS_features(augmentations, model=nlp)
 
-    # # Extract emotions
-    augmentations = features.extract_emotion_features(augmentations)
-    
-    ################# FEATURES ALL EXTRACTED ############
-    
+        # # Extract emotions
+        augmentations = features.extract_emotion_features(augmentations)
+        
+        ################# FEATURES ALL EXTRACTED ############
+        
+        Train_Authors.update(augmentations)
+
     print("Features have been extracted. Now clustering.")
-    
-    Train_Authors.update(augmentations)
     
     # Cluster the Named Entities
     Train_Authors, ner_clusters = features.extract_mcts_ner(Train_Authors)
