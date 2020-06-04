@@ -239,7 +239,7 @@ def extract_mcts_ner(authors, n_models=50, k=3, threshold=1.0, _max_iter=5000, _
             for term in list(c):
                 count += cleaned.count(re.sub("_", " ", term))
 
-            authors[author].most_common_adj_score = count / len(authors[author].tweets)
+            authors[author].most_common_ner_score = count / len(authors[author].tweets)
         return authors
 
     print("Loading data...")

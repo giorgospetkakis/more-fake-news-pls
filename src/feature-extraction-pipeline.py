@@ -86,6 +86,7 @@ kf = StratifiedKFold(n_splits=3,shuffle=True,random_state=69)
 #Start counting so we know in which fold we are in
 k = 1
 for train_index, test_index in kf.split(X,y):
+
     print("Beginning k fold {}".format(k))
     
     ############################ TRAINING ##############################
@@ -222,7 +223,7 @@ for train_index, test_index in kf.split(X,y):
         test_df = test_df.drop('author_id', axis=1).to_numpy()
         X_test = test_df[:,:-1]
         
-        THIS_PIPELINE_PATH = PIPELINE_PATH + "X_test/"
+        THIS_PIPELINE_PATH = PIPELINE_PATH + f"K{k}/X_test/"
 
         if not os.path.exists(THIS_PIPELINE_PATH):
             os.makedirs(THIS_PIPELINE_PATH)
