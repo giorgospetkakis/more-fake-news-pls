@@ -104,7 +104,7 @@ for train_index, test_index in kf.split(X,y):
     
     print("Augmenting training data.")
 
-    for i in range(5):
+    for i in range(1):
     
         # Augment training data. Then extract the features for it
         augmentations = train_time_augmentation(X[train_index])
@@ -176,8 +176,7 @@ for train_index, test_index in kf.split(X,y):
     ############################ TESTING DATA ##############################
     
     y_test = y[test_index]
-    # preds = []
-    
+
     # Save y_test values
     pd.DataFrame(y_test).to_csv(THIS_PIPELINE_PATH+"y_test.csv")
 
