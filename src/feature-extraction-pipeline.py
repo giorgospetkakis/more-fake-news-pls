@@ -151,6 +151,7 @@ for train_index, test_index in kf.split(X,y):
     
     train_df = train_df.drop('author_id', axis=1).to_numpy()
     X_train = train_df[:,:-1]
+    y_train = train_df[:,-1]
     
     THIS_PIPELINE_PATH = PIPELINE_PATH + "K{}/".format(k)
 
