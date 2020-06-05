@@ -1,0 +1,14 @@
+black
+high
+bad
+dead
+great
+little
+new
+big
+true
+best
+right
+old
+free
+young

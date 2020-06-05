@@ -1,0 +1,17 @@
+black
+high
+wrong
+bad
+great
+little
+new
+big
+good
+latest
+true
+best
+biggest
+old
+free
+american
+young

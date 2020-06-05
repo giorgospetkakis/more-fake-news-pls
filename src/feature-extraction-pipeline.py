@@ -104,7 +104,7 @@ for train_index, test_index in kf.split(X,y):
     
     print("Augmenting training data.")
 
-    for i in range(1):
+    for i in range(5):
     
         # Augment training data. Then extract the features for it
         augmentations = train_time_augmentation(X[train_index])
