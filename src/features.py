@@ -8,6 +8,8 @@ import spacy
 import numpy as np
 import pandas as pd
 from sklearn.cluster import KMeans
+from nltk.corpus import stopwords 
+from nltk.tokenize import word_tokenize
 from sklearn.feature_extraction.text import TfidfVectorizer
 import textstat
 from lexical_diversity import lex_div as ld
@@ -670,10 +672,20 @@ def extract_emotion_features(authors):
         authors[author].emotion = auth_dict
     return authors
 
+def extract_nosw(authors):
+    stop_words = set(stopwords.words('english'))
+
+    for a in authors.keys():
+        for tweet in authors[a].clean:
+            word_tokens = word_tokenize(tweet)
+            _nosw = [w for w in word_tokens if not w in stop_words]
+        authors[a].nosw = _nosw
+    return authors
+
 def extract_word_embeddings(authors, c=-1):
     print("Adding word embeddings...")
     # Split sentences
-    sentences = [[" ".join(tw) for tw in auth.nosw] for auth in list(authors.values())]
+    sentences = [[" ".join(tw) for tw in auth.tokens] for auth in list(authors.values())]
 
     print("Creating trigrams...")
     # Create bigram model
@@ -713,7 +725,11 @@ def extract_word_embeddings(authors, c=-1):
             if trigram in word_vectors.index:
                 vec += [word_vectors.loc[trigram, :].to_numpy()]
 
-        vec = np.mean(vec, axis=0)
+        if len(vec) == 0:
+            vec = np.zeros((300, 1))
+        else:
+            vec = np.mean(vec, axis=0)
+
         authors[a].embeddings = vec
         
     return authors, word_vectors
