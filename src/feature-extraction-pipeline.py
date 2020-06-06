@@ -84,7 +84,7 @@ df = pd.read_csv("data/IDs_names.csv").to_numpy()
 X = df[:,0]
 y = df[:,1].astype(int)
 
-PIPELINE_PATH = "data/processed/1200/"
+PIPELINE_PATH = "data/processed/800/"
 
 kf = StratifiedKFold(n_splits=3,shuffle=True,random_state=69)
 
@@ -104,7 +104,7 @@ for train_index, test_index in kf.split(X,y):
     
     print("Augmenting training data.")
 
-    for i in range(5):
+    for i in range(3):
     
         # Augment training data. Then extract the features for it
         augmentations = train_time_augmentation(X[train_index])
@@ -145,6 +145,9 @@ for train_index, test_index in kf.split(X,y):
     # Cluster the adjectives
     Train_Authors, adj_clusters = features.extract_mcts_adj(Train_Authors)
 
+    # Extract embeddings
+    Train_Authors, embeddings = features.extract_word_embeddings(Train_Authors)
+
     # Create dataframe of what
     train_df = preprocessing.convert_to_df(Train_Authors)
     
@@ -172,7 +175,8 @@ for train_index, test_index in kf.split(X,y):
     with open(THIS_PIPELINE_PATH + 'adj_clusters.txt', 'w', encoding='utf-8') as f:
         for item in adj_clusters:
             f.write("%s\n" % item)
-        
+    
+    embeddings.to_csv(THIS_PIPELINE_PATH + 'embeddings.csv')
     ############################ TESTING DATA ##############################
     
     y_test = y[test_index]
@@ -225,6 +229,9 @@ for train_index, test_index in kf.split(X,y):
 
         # Extract emotions
         Test3s_Authors = features.extract_emotion_features(Test3s_Authors)
+
+        # Extract word embeddings
+        Test3s_Authors, _ = features.extract_word_embeddings(Test3s_Authors, c=embeddings)
 
         test_df = preprocessing.convert_to_df(Test3s_Authors)
         test_df = test_df.drop('author_id', axis=1).to_numpy()
