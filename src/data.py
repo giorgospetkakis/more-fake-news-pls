@@ -133,6 +133,7 @@ class Author:
         self.adjectives = {}
         self.POS_counts = {}
         self.emotion = {}
+        self.embeddings = None
         tag_list = ['ADJ' ,'ADP', 'ADV', 'AUX' , 'CONJ' , 'CCONJ' , 'DET' , 'INTJ' , 'NOUN' , 'NUM' , 'PART' , 'PRON' , 'PROPN' , 'PUNCT' , 'SCONJ' , 'SYM' , 'VERB' ,'X' , 'TOKEN']
 
         for tag in tag_list:
@@ -231,11 +232,8 @@ def get_processed_data(ids=None, lang='en'):
     '''
 
     go_to_project_root()
-
-    if ids == None:
-        file_list = [f for f in listdir(PREPROCESSED_DATA_PATH) if isfile(join(PREPROCESSED_DATA_PATH, f)) and f.split(".")[-1] == "json"]
-    else:
-        file_list = [f for f in listdir(PREPROCESSED_DATA_PATH) if isfile(join(PREPROCESSED_DATA_PATH, f)) and f.split(".")[-1] == "json" and f.split(".")[0] in ids]
+    
+    file_list = [f for f in listdir(PREPROCESSED_DATA_PATH) if isfile(join(PREPROCESSED_DATA_PATH, f)) and f.split(".")[-1] == "json"]
 
     authors = {}
     for file in file_list:

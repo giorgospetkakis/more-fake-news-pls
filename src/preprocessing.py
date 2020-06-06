@@ -22,7 +22,7 @@ def convert_to_df(authors, export=False):
     '''
     # Can't not hard-code this
     # Create table, fill table, convert to dataframe, name columns, return
-    table = np.hstack((np.zeros((len(list(authors.values())), 1)).astype('str'), np.zeros((len(list(authors.values())), 58))))
+    table = np.hstack((np.zeros((len(list(authors.values())), 1)).astype('str'), np.zeros((len(list(authors.values())), 358))))
 
     for i, a in enumerate(list(authors.values())):
         table[i] = [
@@ -98,10 +98,9 @@ def convert_to_df(authors, export=False):
             a.emotion["positive"],
             a.emotion["negative"],
 
-            # https://www.youtube.com/watch?v=DpxDl68brww
+            *list(a.embeddings),
             a.truth
-
-            ]
+        ]
 
     df = pd.DataFrame(table, columns=[
         "author_id",
@@ -161,9 +160,10 @@ def convert_to_df(authors, export=False):
         "joy",
         "disgust",
         "positive",
-        "negative",
-        "truth"
-        ])
+        "negative"]
+        + [f"emb_{i}" for i in range(300)] + 
+        ["truth"]
+        )
 
     # Enable to export to file
     if export:
