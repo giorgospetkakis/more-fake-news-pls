@@ -25,7 +25,7 @@ def convert_to_df(authors, export=False):
     table = np.hstack((np.zeros((len(list(authors.values())), 1)).astype('str'), np.zeros((len(list(authors.values())), 358))))
 
     for i, a in enumerate(list(authors.values())):
-        table[i] = [
+        table[i, :] = [
             # id
             a.author_id,
 

@@ -1,16 +1,18 @@
 import os
-import data
 import random
-import features
-import preprocessing
+import string
+
+import numpy as np
+import pandas as pd
+import spacy
+from scipy import stats
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import StratifiedKFold
-from scipy import stats
-import pandas as pd
-import numpy as np
+
+import data
+import features
+import preprocessing
 from utils import go_to_project_root
-import spacy
-import string
 
 nlp = spacy.load("en_core_web_md")
 
@@ -84,7 +86,7 @@ df = pd.read_csv("data/IDs_names.csv").to_numpy()
 X = df[:,0]
 y = df[:,1].astype(int)
 
-PIPELINE_PATH = "data/processed/800/"
+PIPELINE_PATH = "data/processed/800s/"
 
 kf = StratifiedKFold(n_splits=3,shuffle=True,random_state=69)
 
@@ -106,54 +108,53 @@ for train_index, test_index in kf.split(X,y):
 
     for i in range(3):
     
-        # # Augment training data. Then extract the features for it
+    #     # # Augment training data. Then extract the features for it
         augmentations = train_time_augmentation(X[train_index])
         
-        # # # First extract the nonlinguistic features
+    #     # # # First extract the nonlinguistic features
         augmentations = features.extract_nonlinguistic_features(augmentations)
 
-        # # # Extract semantic similarity
-        # augmentations = features.extract_semantic_similarity(augmentations, model=nlp)
+    #     # # # Extract semantic similarity
+        augmentations = features.extract_semantic_similarity(augmentations, model=nlp)
 
-        # # # Get the lemmas
+    #     # # # Get the lemmas
         augmentations = features.extract_clean_tweets(augmentations, model=nlp)
 
-        # # # Get no_stop_words list
+    #     # # # Get no_stop_words list
         augmentations = features.extract_nosw(augmentations)
 
-        # # # Lexical features -- TTR requires lemmas
+    #     # # # Lexical features -- TTR requires lemmas
         augmentations = features.extract_lexical_features(augmentations)
 
-        # # # Get Named Entities
+    #     # # # Get Named Entities
         augmentations = features.extract_named_entities(augmentations, model=nlp)
 
-        # # # Get POS tags
+    #     # # # Get POS tags
         augmentations = features.extract_pos_tags(augmentations, model=nlp)
 
-        # # # Count POSes and get adjectives
+    #     # # # Count POSes and get adjectives
         augmentations = features.extract_POS_features(augmentations, model=nlp)
 
-        # # # Extract emotions
+    #     # # # Extract emotions
         augmentations = features.extract_emotion_features(augmentations)
         
-        ################# FEATURES ALL EXTRACTED ############
+    #     ################# FEATURES ALL EXTRACTED ############
         
         Train_Authors.update(augmentations)
 
     print("Features have been extracted. Now clustering.")
     
-    # Cluster the Named Entities
+    # # Cluster the Named Entities
     Train_Authors, ner_clusters = features.extract_mcts_ner(Train_Authors)
     
-    # Cluster the adjectives
+    # # Cluster the adjectives
     Train_Authors, adj_clusters = features.extract_mcts_adj(Train_Authors)
 
-    # Extract embeddings
+    # # Extract embeddings
     Train_Authors, embeddings = features.extract_word_embeddings(Train_Authors)
 
-    # Create dataframe of what
+    # # Create dataframe of what
     train_df = preprocessing.convert_to_df(Train_Authors)
-    
     
     train_df = train_df.drop('author_id', axis=1).to_numpy()
     X_train = train_df[:,:-1]
@@ -170,7 +171,7 @@ for train_index, test_index in kf.split(X,y):
     pd.DataFrame(X_train).to_csv(THIS_PIPELINE_PATH+"X_train.csv")
     pd.DataFrame(y_train).to_csv(THIS_PIPELINE_PATH+"y_train.csv")
     
-    # # Write clusters (if you want to further modularize this. you can save the test and train indices and separate these two parts of the feature extraction
+    # # # Write clusters (if you want to further modularize this. you can save the test and train indices and separate these two parts of the feature extraction
     with open(THIS_PIPELINE_PATH + 'ner_clusters.txt', 'w', encoding='utf-8') as f:
         for item in ner_clusters:
             f.write("%s\n" % item)
@@ -179,7 +180,7 @@ for train_index, test_index in kf.split(X,y):
         for item in adj_clusters:
             f.write("%s\n" % item)
     
-    embeddings.to_csv(THIS_PIPELINE_PATH + 'embeddings.csv')
+    # embeddings.to_csv(THIS_PIPELINE_PATH + 'embeddings.csv')
     ############################ TESTING DATA ##############################
     
     y_test = y[test_index]
@@ -207,7 +208,7 @@ for train_index, test_index in kf.split(X,y):
         Test3s_Authors = features.extract_nonlinguistic_features(Test3s_Authors)
 
         # Extract semantic similarity
-        # Test3s_Authors = features.extract_semantic_similarity(Test3s_Authors, model=nlp)
+        Test3s_Authors = features.extract_semantic_similarity(Test3s_Authors, model=nlp)
 
         # Get the lemmas
         Test3s_Authors = features.extract_clean_tweets(Test3s_Authors, model=nlp)

@@ -133,7 +133,7 @@ class Author:
         self.adjectives = {}
         self.POS_counts = {}
         self.emotion = {}
-        self.embeddings = None
+        self.embeddings = [0]*300
         tag_list = ['ADJ' ,'ADP', 'ADV', 'AUX' , 'CONJ' , 'CCONJ' , 'DET' , 'INTJ' , 'NOUN' , 'NUM' , 'PART' , 'PRON' , 'PROPN' , 'PUNCT' , 'SCONJ' , 'SYM' , 'VERB' ,'X' , 'TOKEN']
 
         for tag in tag_list:

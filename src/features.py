@@ -320,6 +320,7 @@ def extract_mcts_ner(authors, n_models=50, k=3, threshold=1.0, _max_iter=5000, _
                 pure_cluster = c
                 max_purity = purity
 
+        print(max_purity)
         # Check if there is a cluster with very high purity
         if max_purity >= threshold:
             list_of_sets += [set()]
@@ -450,7 +451,7 @@ def extract_mcts_adj(authors, n_models=50, k=3, threshold=1.0, _max_iter=5000, _
             if purity > max_purity:
                 pure_cluster = c
                 max_purity = purity
-
+        print(max_purity)
         # Check if there is a cluster with very high purity
         if max_purity >= threshold:
             list_of_sets += [set()]
@@ -685,7 +686,7 @@ def extract_nosw(authors):
 def extract_word_embeddings(authors, c=-1):
     print("Adding word embeddings...")
     # Split sentences
-    sentences = [[" ".join(tw) for tw in auth.tokens] for auth in list(authors.values())]
+    sentences = [[" ".join(tw) for tw in auth.nosw] for auth in list(authors.values())]
 
     print("Creating trigrams...")
     # Create bigram model
