@@ -3,7 +3,7 @@
 __"Given a user’s tweets, can we predict if they have previously shared fake news?"__
 
 by 
-[@giorgospetkakis](github.com/giorgospetkakis "Giorgos Petkakis")  [@spaidataiga](github.com/spaidataiga "Sara Vera Marjanovic")  [@FloraHK](github.com/FloraHK "Flora Haahr Kringelbach")
+[@giorgospetkakis](https://github.com/giorgospetkakis "Giorgos Petkakis")  [@spaidataiga](https://github.com/spaidataiga "Sara Vera Marjanovic")  [@FloraHK](https://github.com/FloraHK "Flora Haahr Kringelbach")
 
 ## Abstract  
 
