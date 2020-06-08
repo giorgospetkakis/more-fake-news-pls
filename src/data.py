@@ -1,14 +1,21 @@
 ## Natural Language Processing 2 Final
 ## Sara, Flora, Giorgos
 
-import jsonpickle
-from bs4 import BeautifulSoup
 from os import listdir
 from os.path import isfile, join
+
+import jsonpickle
+import numpy as np
+import pandas
+from bs4 import BeautifulSoup
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+
 from utils import go_to_project_root
 
 RAW_DATA_PATH = "data/raw/"
 PREPROCESSED_DATA_PATH = "data/interim/json/"
+CSV_DATA_PATH = "data/processed/processed.csv"
 
 class Author:
     '''
@@ -53,11 +60,20 @@ class Author:
 
             The first coordinate of the list refers to the tweet of the author
             The nested list contains a sequence (separated by spaces) of the lemmas of the words. 
+
+        nosw(list):
+            A version of the tweets without the stopwords, split into a list.
         
         similarities(np array):
             Contains an array of the similarity measure (between 0 and 1) of two tweets indexed on the two axes.
             Half an array (values are not repeated). Empty values are filled in as -1.
             Saved for now, but perhaps would be wise to conserve only what we need?
+
+        readability(np float64):
+            The average readability of the user's tweets (in grade level, as determined by textstat)
+
+        TTR(np float64):
+            The type-token ratio of the user's full set of tweets.
 
         max_similar(np float64):
             The value of similarity between the user's most similar tweets. 
@@ -106,7 +122,10 @@ class Author:
         self.POS_tags = []
         self.tokens = []
         self.clean = []
+        self.nosw = []
         self.similarities = None
+        self.readability = None
+        self.TTR = None
         self.max_similar = None
         self.min_similar = None
         self.mean_similar = None
@@ -115,6 +134,8 @@ class Author:
         self.most_common_adj_score = None
         self.adjectives = {}
         self.POS_counts = {}
+        self.emotion = {}
+        self.embeddings = [0]*300
         tag_list = ['ADJ' ,'ADP', 'ADV', 'AUX' , 'CONJ' , 'CCONJ' , 'DET' , 'INTJ' , 'NOUN' , 'NUM' , 'PART' , 'PRON' , 'PROPN' , 'PUNCT' , 'SCONJ' , 'SYM' , 'VERB' ,'X' , 'TOKEN']
 
         for tag in tag_list:
@@ -154,13 +175,18 @@ def __get_truth_vals__(directory):
             break
     return truth_dict
 
-def __import_from__(directory):
+def __import_from__(directory, ids=None):
     file_list = [f for f in listdir(directory) if isfile(join(directory, f)) and f.split(".")[-1] == "xml"]
     truth_vals = __get_truth_vals__(directory)
     author_dict = {}
     for file in file_list:
         author_id = file.split(".")[0]
-        author_dict[author_id] = Author(author_id, __parse_tweets__(join(directory, file)), truth_vals[author_id])
+        if ids:
+            if author_id in ids:
+                author_dict[author_id] = Author(author_id, __parse_tweets__(join(directory, file)), truth_vals[author_id])
+        else:
+            author_dict[author_id] = Author(author_id, __parse_tweets__(join(directory, file)), truth_vals[author_id])
+
     return author_dict
 
 def __parse_tweets__(filepath):
@@ -170,17 +196,7 @@ def __parse_tweets__(filepath):
     tweets = soup.find_all('document')
     return [t.get_text() for t in tweets]
 
-def convert_to_JSON(author):
-    '''
-    Converts a given author to its JSON equivalent.
-
-    Parameters:
-        author(Author):
-            The author to be converted
-    '''
-    return jsonpickle.encode(author)
-
-def get_raw_data(lang='en'):
+def get_raw_data(ids=None, lang='en'):
     '''
     Returns the raw data in the selected language.
     Default is English
@@ -195,14 +211,19 @@ def get_raw_data(lang='en'):
             A dictionary containing all the raw author information in the selected language.
     '''
     go_to_project_root()
-    return __import_from__(RAW_DATA_PATH + lang)
+    return __import_from__(RAW_DATA_PATH + lang, ids)
 
-def get_processed_data(lang='en'):
+def get_processed_data(ids=None, lang='en'):
+
     '''
     Returns the processed author data in the selected language.
     Default is English
 
     Parameters:
+        ids (list):
+            List of str ids to acquire
+            If none are input, it will return the data of all authors.
+
         lang (str): 
             The return language. 
             Valid options: 'en', 'es'.
@@ -211,7 +232,9 @@ def get_processed_data(lang='en'):
         data (dict): 
             A dictionary containing all the processed author information in the selected language.
     '''
+
     go_to_project_root()
+    
     file_list = [f for f in listdir(PREPROCESSED_DATA_PATH) if isfile(join(PREPROCESSED_DATA_PATH, f)) and f.split(".")[-1] == "json"]
 
     authors = {}
@@ -223,7 +246,67 @@ def get_processed_data(lang='en'):
 
     return authors
 
-def exportJSON(author):
+def get_csv():
+    '''
+    Returns the processed csv data file from the default path
+    '''
+    go_to_project_root()
+    return pandas.read_csv(CSV_DATA_PATH, index_col=0)
+
+def get_prepared_data(split=0.667, norm=True, pca=None):
+    '''
+    Return prepared data for easy modeling.
+
+    Parameters:
+        split(float):
+            The 0-1 ratio of data in the training set.
+        norm(boolean):
+            Whether or not to normalize the data set.
+        pca(int):
+            Returns the given number of Principal Components. 
+            Leave blank to return all features.
+    
+    Returns:
+        xtrain, ytrain, xtest, ytest
+    '''
+    df = get_csv()
+    table = df.to_numpy()
+
+    # Split X and Y
+    _ids = table[:,0].reshape(300,1)
+    X = table[:,1:-1]
+    y = table[:,-1]
+
+    # Normalize
+    if norm:
+        scaler = StandardScaler()
+        X = scaler.fit_transform(X)
+    
+    # Extract only first n principal components
+    if pca:
+        X = PCA(n_components=pca).fit_transform(X)
+
+    X = np.hstack((_ids, X))
+    _s = int(X.shape[0] * split)
+    xtrain = X[_s:]
+    ytrain = y[_s:]
+
+    xtest = X[:_s]
+    ytest = y[:_s]
+
+    return xtrain, ytrain, xtest, ytest
+
+def convert_to_JSON(author):
+    '''
+    Converts a given author to its JSON equivalent.
+
+    Parameters:
+        author(Author):
+            The author to be converted
+    '''
+    return jsonpickle.encode(author)
+
+def exportJSON(author, path=""):
     '''
     Exports an author object to a JSON file
     Parameters: 
@@ -231,7 +314,8 @@ def exportJSON(author):
             The author to be serialized
     Export: None
     '''
-    path = PREPROCESSED_DATA_PATH
+    if path == "":
+        path = PREPROCESSED_DATA_PATH
     with open(f"{path}{author.author_id}.json", "w") as file:
         file.writelines(convert_to_JSON(author))
         file.close()

@@ -1,10 +1,11 @@
 ## Natural Language Processing 2 Final
 ## Sara, Flora, Giorgos
 
-import data
-from utils import go_to_project_root
 import numpy as np
 import pandas as pd
+
+import data
+from utils import go_to_project_root
 
 filepath = 'data/processed/'
 
@@ -22,10 +23,17 @@ def convert_to_df(authors, export=False):
     '''
     # Can't not hard-code this
     # Create table, fill table, convert to dataframe, name columns, return
-    table = np.zeros((len(list(authors.values())), 47))
+    table = np.hstack((np.zeros((len(list(authors.values())), 1)).astype('str'), np.zeros((len(list(authors.values())), 358))))
 
     for i, a in enumerate(list(authors.values())):
-        table[i] = [
+        table[i, :] = [
+            # id
+            a.author_id,
+
+            # Lexical features
+            a.readability,
+            a.TTR,
+
             # Semantic Similarity
             a.max_similar, 
             a.min_similar, 
@@ -78,13 +86,27 @@ def convert_to_df(authors, export=False):
             a.POS_counts['SYM_mean'],
             a.POS_counts['VERB_mean'],
             a.POS_counts['X_mean'],
-            a.POS_counts['TOKEN_mean'],
 
-            # https://www.youtube.com/watch?v=DpxDl68brww
+            # EMOTION
+            a.emotion["anger"],
+            a.emotion["fear"],
+            a.emotion["anticipation"],
+            a.emotion["trust"],
+            a.emotion["surprise"],
+            a.emotion["sadness"],
+            a.emotion["joy"],
+            a.emotion["disgust"],
+            a.emotion["positive"],
+            a.emotion["negative"],
+
+            *list(a.embeddings),
             a.truth
-            ]
+        ]
 
     df = pd.DataFrame(table, columns=[
+        "author_id",
+        "readability",
+        "TTR",
         "max_similar", 
         "min_similar", 
         "mean_similar", 
@@ -130,9 +152,19 @@ def convert_to_df(authors, export=False):
         'SYM',
         'VERB',
         'X',
-        'TOKEN',
-        "truth"
-        ])
+        "anger" ,
+        "fear" ,
+        "anticipation" ,
+        "trust" ,
+        "surprise" ,
+        "sadness" ,
+        "joy",
+        "disgust",
+        "positive",
+        "negative"]
+        + [f"emb_{i}" for i in range(300)] + 
+        ["truth"]
+        )
 
     # Enable to export to file
     if export:
