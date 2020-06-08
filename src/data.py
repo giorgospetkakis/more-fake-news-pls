@@ -1,14 +1,16 @@
 ## Natural Language Processing 2 Final
 ## Sara, Flora, Giorgos
 
+from os import listdir
+from os.path import isfile, join
+
 import jsonpickle
 import numpy as np
 import pandas
 from bs4 import BeautifulSoup
-from os import listdir
-from os.path import isfile, join
-from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+
 from utils import go_to_project_root
 
 RAW_DATA_PATH = "data/raw/"

@@ -1,10 +1,11 @@
 ## Natural Language Processing 2 Final
 ## Sara, Flora, Giorgos
 
-import data
-from utils import go_to_project_root
 import numpy as np
 import pandas as pd
+
+import data
+from utils import go_to_project_root
 
 filepath = 'data/processed/'
 
