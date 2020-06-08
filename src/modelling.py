@@ -92,3 +92,5 @@ for i in range(3):
     acc = balanced_accuracy_score(ytest, pred)
     mean += acc
 print(f"Accuracy: {mean / 3}")
+
+## There is a known bug here- we're getting ~0.5 accuracy on some computers
