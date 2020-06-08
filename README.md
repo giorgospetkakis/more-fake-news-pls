@@ -12,10 +12,11 @@ Team members
 ## Framework
 
 > __data__  
+`raw`: Raw project data  
 `external`: Data from external sources and generated data  
 `interim`: Intermediate processed data  
 `processed`: Final dataset  
-`raw`: Raw project data
+
 
 > __src__  
 `data.py`: Collect data  
