@@ -1,3 +1,0 @@
-https://www.kaggle.com/hamditarek/fake-news-detection-on-twitter-eda/notebook
-
-https://www.kdnuggets.com/2015/11/bot-not-data-analysis-python.html

@@ -1,26 +1,26 @@
 ## Natural Language Processing 2 Final
 ## Sara, Flora, Giorgos
 
+import itertools as it
 import re
-import data
+import warnings
+
 import emoji
-import spacy
 import numpy as np
 import pandas as pd
-from sklearn.cluster import KMeans
-from nltk.corpus import stopwords 
-from nltk.tokenize import word_tokenize
-from sklearn.feature_extraction.text import TfidfVectorizer
+import spacy
 import textstat
+from gensim.corpora import Dictionary, MmCorpus
+from gensim.models import Phrases, Word2Vec
+from gensim.models.ldamulticore import LdaMulticore
 from lexical_diversity import lex_div as ld
-import preprocessing
-import itertools as it
-import warnings
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-from gensim.models import Phrases, Word2Vec
-from gensim.corpora import Dictionary, MmCorpus
-from gensim.models.ldamulticore import LdaMulticore
+from sklearn.cluster import KMeans
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+import data
+import preprocessing
 
 
 def __clean_tweets__(tweets, pattern=None, clean_USER=False):
@@ -313,7 +313,7 @@ def extract_mcts_ner(authors, n_models=50, k=3, threshold=1.0, _max_iter=5000, _
 
             class_sum = class_a + class_b
             if class_sum != 0:
-                purity = abs(0.5 - class_a / class_sum) * (class_sum/len(tweetsTest)) * 10
+                purity = abs(class_a / class_sum) * (class_sum/len(tweetsTest)) * 10
             else:
                 purity = 0
             if purity > max_purity:
@@ -445,7 +445,7 @@ def extract_mcts_adj(authors, n_models=50, k=3, threshold=1.0, _max_iter=5000, _
 
             class_sum = class_a + class_b
             if class_sum != 0:
-                purity = abs(0.5 - class_a / class_sum) * (class_sum/len(tweetsTest)) * 10
+                purity = abs(class_a / class_sum) * (class_sum/len(tweetsTest)) * 10
             else:
                 purity = 0
             if purity > max_purity:
@@ -485,7 +485,6 @@ def extract_nonlinguistic_features(authors):
     Extract the features stored in the nonlinguistic_features dict attribute on the author class.
     Takes dictionary of authors as an input and returns the modified version.
     '''
-
     for author in authors.keys():
 
         #Initialize the dictionary with 0's. We will update incrementally
@@ -613,6 +612,10 @@ def extract_POS_features(authors, model=None):
     return authors
 
 def extract_lexical_features(Authors):
+    '''
+    Extract the readability and typed-token-ratio features 
+    Takes dictionary of authors as an input and returns the modified version.
+    '''
     # On raw text, get average grade level of the tweets
     for author in Authors.keys():
         Authors[author].readability = 0
@@ -626,6 +629,10 @@ def extract_lexical_features(Authors):
     return Authors
 
 def extract_emotion_features(authors):
+    '''
+    Extract the emotion features based on the NRC emotion Lexicon
+    Takes dictionary of authors as an input and returns the modified version.
+    '''
     word_lexicon = pd.read_csv('data/external/NRC_EmoWord.txt')
         #word_lexicon["aback"], word_lexicon["anger"],word_lexicon["0"] = word_lexicon["aback anger 0"].str.split("\\t", n = 2, expand = True) 
 
@@ -674,6 +681,10 @@ def extract_emotion_features(authors):
     return authors
 
 def extract_nosw(authors):
+    '''
+    Extract the values with no stop words
+    Takes dictionary of authors as an input and returns the modified version.
+    '''
     stop_words = set(stopwords.words('english'))
 
     for a in authors.keys():
@@ -684,6 +695,10 @@ def extract_nosw(authors):
     return authors
 
 def extract_word_embeddings(authors, c=-1):
+    '''
+    Extract self word2vec word embeddings
+    Takes dictionary of authors as an input and returns the modified version.
+    '''
     print("Adding word embeddings...")
     # Split sentences
     sentences = [[" ".join(tw) for tw in auth.nosw] for auth in list(authors.values())]
