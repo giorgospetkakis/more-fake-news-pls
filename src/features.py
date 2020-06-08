@@ -313,7 +313,7 @@ def extract_mcts_ner(authors, n_models=50, k=3, threshold=1.0, _max_iter=5000, _
 
             class_sum = class_a + class_b
             if class_sum != 0:
-                purity = abs(0.5 - class_a / class_sum) * (class_sum/len(tweetsTest)) * 10
+                purity = abs(class_a / class_sum) * (class_sum/len(tweetsTest)) * 10
             else:
                 purity = 0
             if purity > max_purity:
@@ -445,7 +445,7 @@ def extract_mcts_adj(authors, n_models=50, k=3, threshold=1.0, _max_iter=5000, _
 
             class_sum = class_a + class_b
             if class_sum != 0:
-                purity = abs(0.5 - class_a / class_sum) * (class_sum/len(tweetsTest)) * 10
+                purity = abs(class_a / class_sum) * (class_sum/len(tweetsTest)) * 10
             else:
                 purity = 0
             if purity > max_purity:
